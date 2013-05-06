@@ -1,0 +1,15 @@
+name = Commerce Currency Settings
+description = Define your custom commerce currency settings.
+package = Commerce (contrib)
+core = 7.x
+configure = admin/commerce/config/currency/custom-settings
+
+dependencies[] = commerce
+dependencies[] = commerce_ui
+
+; Information added by drupal.org packaging script on 2013-01-22
+version = "7.x-1.0"
+core = "7.x"
+project = "commerce_currency_settings"
+datestamp = "1358850259"
+

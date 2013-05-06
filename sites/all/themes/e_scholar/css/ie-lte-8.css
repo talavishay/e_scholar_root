@@ -1,0 +1,47 @@
+.ie8 .zone-header .region-branding{
+        float: right;
+}
+.ie8 .zone-header .region-user-second .content, 
+.ie8 .zone-header .region-user-second-inner,
+.ie8 .zone-header .region-user-second{
+    float: left;
+}
+.ie8 #zone-footer .menu li a,
+.ie8 #block-system-user-menu .menu li{
+    border-left-width: 2px;
+}
+#block-views-exp-search-api-solr-view-page  .ie8 #edit-text-wrapper{
+    width: 100%;
+    padding-top:10px !important;
+    height:25px !important;
+}
+
+
+.ie9 #block-commerce-cart-cart .block-title a{
+    
+    border-top-left-radius: 0px ; 
+    border-top-right-radius: 10px ; 
+}
+
+.ie8 .view-commerce-cart-block h2{
+    float: none !important;
+    width:100%;
+}
+.ie8 #user-login-form{
+    float: right;
+    width: 100%;
+}
+.ie8 #block-views-flag-bookmarks-block-2,
+.ie8 .view-flag-bookmarks,
+.ie8 .view-flag-bookmarks table{
+    width: 100%;
+}
+.ie8 .block-user-login ul li a,
+.ie8 .block-menu ul li a{
+    border-left: 2px solid #666666 !important;
+}
+.ie8 .block-user-login ul li.last a,
+.ie8 .block-menu ul li.last a{
+    border-left: 0px solid #666666 !important;
+}
+

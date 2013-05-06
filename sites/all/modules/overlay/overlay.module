@@ -1,0 +1,12 @@
+<?php
+function overlay_init(){
+    drupal_add_js(drupal_get_path('module', 'overlay') . '/overlay.js');
+    drupal_add_css(drupal_get_path('module', 'overlay') . '/overlay.css');
+}
+function overlay_menu_alter(&$items) {
+
+    $items['user/%user/view']['access callback'] = FALSE;
+    $items['user/%user/view']['access callback'] = FALSE;
+    
+//    $items['user/%user_category/edit']['title'] = 'פרטים אישיים';
+}

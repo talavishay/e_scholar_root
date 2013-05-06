@@ -1,0 +1,41 @@
+name = laxo Strongarm
+core = 7.x
+package = laxo
+php = 5.2.4
+dependencies[] = ctools
+dependencies[] = features
+dependencies[] = strongarm
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:1
+features[filter][] = full_html
+features[variable][] = cache
+features[variable][] = cache_lifetime
+features[variable][] = clean_url
+features[variable][] = comment_page
+features[variable][] = content_access_settings
+features[variable][] = drupal_http_request_fails
+features[variable][] = file_temporary_path
+features[variable][] = minimum_word_size
+features[variable][] = page_cache_maximum_age
+features[variable][] = page_compression
+features[variable][] = path_alias_whitelist
+features[variable][] = preprocess_css
+features[variable][] = preprocess_js
+features[variable][] = search_default_module
+features[variable][] = site_403
+features[variable][] = site_404
+features[variable][] = site_default_country
+features[variable][] = site_frontpage
+features[variable][] = site_mail
+features[variable][] = site_slogan
+features[variable][] = theme_default
+features[variable][] = theme_sub_bartik_settings
+features[variable][] = user_admin_role
+features[variable][] = user_register
+
+
+; Information added by drush on 2012-10-14
+version = "unknown"
+project = "laxo_strongarm"
+datestamp = "1350218033"
+

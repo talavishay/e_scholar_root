@@ -1,0 +1,44 @@
+name = laxo admin
+core = 7.x
+package = laxo
+php = 5.2.4
+dependencies[] = admin_menu
+dependencies[] = commerce_line_item
+dependencies[] = commerce_line_item_ui
+dependencies[] = commerce_product_pricing_ui
+dependencies[] = commerce_product_ui
+dependencies[] = commerce_ui
+dependencies[] = ctools
+dependencies[] = devel
+dependencies[] = features
+dependencies[] = field_ui
+dependencies[] = flag
+dependencies[] = module_filter
+dependencies[] = patterns
+dependencies[] = patterns_components
+dependencies[] = patterns_export
+dependencies[] = patterns_yamlparser
+dependencies[] = patterns_phpparser
+dependencies[] = patterns_xmlparser
+dependencies[] = token
+dependencies[] = rules_admin
+dependencies[] = strongarm
+dependencies[] = views_ui
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:1
+features[user_permission][] = access devel information
+features[user_permission][] = administer features
+features[user_permission][] = administer flags
+features[user_permission][] = administer line items
+features[user_permission][] = administer patterns
+features[user_permission][] = get patterns
+features[user_permission][] = manage features
+features[user_permission][] = public patterns
+features[user_permission][] = use flag import
+
+
+; Information added by drush on 2012-10-14
+version = "unknown"
+project = "laxo_admin"
+datestamp = "1350218040"
+

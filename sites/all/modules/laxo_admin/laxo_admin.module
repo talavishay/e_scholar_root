@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the laxo admin feature.
+ */
+
+include_once 'laxo_admin.features.inc';

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the laxo Strongarm feature.
+ */
+
+include_once 'laxo_strongarm.features.inc';

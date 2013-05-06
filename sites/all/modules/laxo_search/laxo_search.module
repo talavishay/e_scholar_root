@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the laxo search feature.
+ */
+
+include_once 'laxo_search.features.inc';
