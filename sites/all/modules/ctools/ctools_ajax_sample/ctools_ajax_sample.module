@@ -220,7 +220,7 @@ function ctools_ajax_sample_page() {
  * Returns a "take it all over" hello world style request.
  */
 function ctools_ajax_sample_hello($js = NULL) {
-  $output = '<h1>' . t('Hello CCCCCCCCCCCCCCWorld') . '</h1>';
+  $output = '<h1>' . t('Hello World') . '</h1>';
   if ($js) {
     ctools_include('ajax');
     $commands = array();
@@ -263,7 +263,7 @@ function ctools_ajax_sample_login($js = NULL) {
   ctools_include('modal');
   ctools_include('ajax');
   $form_state = array(
-    'title' => t('LoginKKKKKKKKKKKKKKKKKk'),
+    'title' => t('Login'),
     'ajax' => TRUE,
   );
   $output = ctools_modal_form_wrapper('user_login', $form_state);
