@@ -1083,7 +1083,9 @@ body.page-cart #region-preface-third,
 body.page-cart #edit-submit{
     display:none;
 }
-
+#region-preface-third #shopping-cart {
+  display: none;
+}
 #sb-container .views-row.mlt{
    border-bottom: 1px dotted;
 float: right;
