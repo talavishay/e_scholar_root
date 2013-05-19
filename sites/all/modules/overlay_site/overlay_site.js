@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
 
 
 
-jQuery('body:not(.ie) #zone-branding').css('position','relative').append('<div id="overlay"></div><div id="overlay_controls_wrap"><div id="overlay_control" class="overlay_controls_box">*</div><div id="overlay_control_dark" class="overlay_controls_box">-</div><div id="overlay_control_light" class="overlay_controls_box">+</div><div id="overlay_control_opacity" class="overlay_controls_box"></div></div>');//+
+jQuery('body:not(.ie) #zone-header').css('position','relative').append('<div id="overlay"></div><div id="overlay_controls_wrap"><div id="overlay_control" class="overlay_controls_box">*</div><div id="overlay_control_dark" class="overlay_controls_box">-</div><div id="overlay_control_light" class="overlay_controls_box">+</div><div id="overlay_control_opacity" class="overlay_controls_box"></div></div>');//+
 
 // '<div id="ruler" style="position:fixed;top:0px;left:20px;background:red;width:1px;height:100%"></div>');
  jQuery('#overlay_control').bind("click", function(e){
@@ -51,10 +51,6 @@ jQuery('body:not(.ie) #zone-branding').css('position','relative').append('<div i
      
  });
  
- jQuery('body.contact #overlay').css("background","url(/sites/all/modules/overlay_site/contact_screenshot.png)");
- jQuery('body.node-type-recommend #overlay').css("background","url(/sites/all/modules/overlay_site/recommend.SCREEN-SHOT.png)");
- jQuery('body.recommend #overlay').css("background","url(/sites/all/modules/overlay_site/recommend.png)");
- jQuery('body.node-type-birthday #overlay').css("background","url(/sites/all/modules/overlay_site/pageinbrithedays-block-menu-menu-select.png)");
- jQuery('body.node-type-blog #overlay').css("background","url(/sites/all/modules/overlay_site/blog-screenshot.jpg)");
+ jQuery('body.page-search #overlay').css("background","url(/sites/all/modules/overlay_site/search_results_similar_arti.jpg)");
 
 });
