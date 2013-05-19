@@ -50,13 +50,15 @@
       <?php print $attachment_before; ?>
     </div>
   <?php endif; ?>
-
+       <div id="display_mode"><span id="min"><?php print t('min view');?></span>|<span id="max"><?php print t('max view');?></span></div>
   <?php if ($pager): ?>
+ 
     <div id="top_pager">
     <?php print $pager; ?>
+        
     </div>
   <?php endif; ?>
-    
+
   <?php if ($rows): ?>
     <div class="view-content">
       <?php print $rows; ?>

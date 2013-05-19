@@ -1,7 +1,13 @@
 
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
-
+.views-ui-dialog fieldset{
+    direction: ltr;
+}
+#views-ajax-body form {
+    direction: ltr;
+    width: 100%;
+}
 span,a,p,div{
     font-family: arial !important;
     color: #444444;
@@ -36,7 +42,7 @@ h2.site-name,
 h6.site-slogan,
 #block-system-main-menu h2.block-title,
 #block-system-user-menu h2.block-title,
-.view-search-api-solr-view   .flag-bookmarks a{
+.view-search-api-solr   .flag-bookmarks a{
     display: none !important;
 }
 
@@ -125,22 +131,25 @@ h6{
 /*PURR MESSAGES*/
 .notice{
   color: #455e70;
-    /*font-size: 1.375em;*/
-    font-size: 20px;
-    padding:15px;
-    
+font-size: 17px;
+line-height: 28px;    
 }
 .notice .close {
-    left: 40px;
-    top: 30px;
-    poistion: relative;
+/*    left: 40px;
+    top: 20px;
+    poistion: relative;*/
     
 }
 
 #block-system-main {
     margin-bottom: 10px;
 }
-#block-views-exp-search-api-solr-view-page{
+
+/*  SEARCH PAGE */
+.region-inner > .contextual-links-wrapper.contextual-links-processed {
+    left: -15px;
+}
+#block-views-exp-search-api-solr-page{
     background: url("/sites/all/themes/e_scholar/images/search_btn_box.png") no-repeat scroll -4px -2px transparent;
 
     border: 1px solid #E2E2E2;
@@ -153,13 +162,13 @@ h6{
     border: 1px solid rgba(193,175,175,1);
 }
 
-.views-exposed-widget.views-submit-button
-#block-views-exp-search-api-solr-view-page .views-exposed-form .views-exposed-widget {
+/*.views-exposed-widget.views-submit-button*/
+#block-views-exp-search-api-solr-page .views-exposed-form .views-exposed-widget {
      float: right;
     margin-bottom: 0 !important;
     padding: 0px;
 }
-#block-views-exp-search-api-solr-view-page #edit-text-wrapper{
+#block-views-exp-search-api-solr-page #edit-text-wrapper{
     padding:0px !important;
 }
 
@@ -167,30 +176,37 @@ h6{
     margin-bottom: 0px !important;
 }
 
+.views-exposed-form .views-exposed-widget {
+    float: right;
+    padding: 0;
+}
 
-#block-views-exp-search-api-solr-view-page{
+#block-views-exp-search-api-solr-page{
    border-radius: 5px 5px 5px 5px;
 }
-/*#block-views-exp-search-api-solr-view-page input#edit-text {
-    background-image: url("/sites/all/themes/e_scholar/images/search_btn_input_box.png");
-    background-position: -1px 0;
-    background-repeat: no-repeat;
-    color: #969696;
-    font-size: 16px;
-    font-weight: normal;
-    height: 35px !important;
-    letter-spacing: 0;
-    padding: 0 35px 0 121px;
-    text-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
-    width: 441px;
-}*/
- html.js input.form-autocomplete {
-    background-position: 0 5px;
+
+#block-views-exp-search-api-solr-page .form-item-text{
+       background-image: url("/sites/all/themes/e_scholar/images/search_btn_input_box.png");
 }
- html.js input.throbbing {
-    background-position: 0 -18px !important;
+#block-views-exp-search-api-solr-page input{
+   background-color: transparent;
+background-position: 91px 10px;
+background-size: 23px auto;
+border: medium none;
+color: #969696;
+font-size: 16px;
+font-weight: normal;
+height: 35px !important;
+letter-spacing: 0;
+padding: 0 35px 0 121px;
+text-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+width: 441px;
+    
 }
-#block-views-exp-search-api-solr-view-page input#edit-text {
+#block-views-exp-search-api-solr-page input.throbbing {
+    background-position: 91px -22px !important;
+}
+/*#block-views-exp-search-api-solr-page input#edit-text {
 	background-color: #E2E2E2;
     color: #A6A6A6;
     display: inline-block;
@@ -200,9 +216,9 @@ h6{
     margin: 5px 40px 9px 0 !important;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.75);
     width: 440px;
-}
+}*/
 
-#block-views-exp-search-api-solr-view-page #edit-text-wrapper{
+#block-views-exp-search-api-solr-page #edit-text-wrapper{
        background-image: url("/sites/all/themes/e_scholar/images/search_btn_input_box.png");
     background-repeat: no-repeat;
     height: 34px;
@@ -213,7 +229,7 @@ h6{
     width: 597px;
 }
 
-#block-views-exp-search-api-solr-view-page .views-exposed-widget.views-submit-button {
+#block-views-exp-search-api-solr-page .views-exposed-widget.views-submit-button {
    display: inline-block;
     height: 33px;
     left: 0;
@@ -227,8 +243,8 @@ h6{
     width: 82px;
     z-index: 2;
 }
-#block-views-exp-search-api-solr-view-page .views-exposed-widget.views-submit-button input{
-    background: url("/sites/all/themes/e_scholar/images/search_btn.png") repeat scroll 0 0 transparent;
+#block-views-exp-search-api-solr-page .views-exposed-widget.views-submit-button input{
+    background: url("/sites/all/themes/e_scholar/images/search_btn.png") no-repeat scroll 0 0 transparent;
     border: medium none;
     color: white;
 font-size: 16px;
@@ -239,7 +255,7 @@ font-size: 16px;
     width: 82px;
 }
 
-#block-views-exp-search-api-solr-view-page #autocomplete {
+#block-views-exp-search-api-solr-page #autocomplete {
     border-radius: 0px 0px 5px 5px;
     /*background-color: #F07575;  fallback color if gradients are not supported */
     background-image: -webkit-linear-gradient(top, #E2E2E2 2px, #E2E2E2 20px, #fff 12em); /* For Chrome and Safari */
@@ -256,19 +272,19 @@ font-size: 16px;
     padding-bottom:16px;
    
 }
-#block-views-exp-search-api-solr-view-page #autocomplete ul{
+#block-views-exp-search-api-solr-page #autocomplete ul{
     text-align: right;
     width: 39% !important;
     padding: 0 13%;
     
 }
-#block-views-exp-search-api-solr-view-page #autocomplete ul,
-#block-views-exp-search-api-solr-view-page #autocomplete ul *,
-#block-views-exp-search-api-solr-view-page #autocomplete ul * *,
-#block-views-exp-search-api-solr-view-page #autocomplete ul * * *{
+#block-views-exp-search-api-solr-page #autocomplete ul,
+#block-views-exp-search-api-solr-page #autocomplete ul *,
+#block-views-exp-search-api-solr-page #autocomplete ul * *,
+#block-views-exp-search-api-solr-page #autocomplete ul * * *{
     background: transparent;
 }
-#block-views-exp-search-api-solr-view-page #autocomplete .autocomplete-suggestion-results{
+#block-views-exp-search-api-solr-page #autocomplete .autocomplete-suggestion-results{
     right:auto;
     left:0px;
 }
@@ -280,7 +296,7 @@ font-size: 16px;
 }
 
 
-#edit-text{
+#edit-search-api-views-fulltext{
     
     border-width: 0;
 }
@@ -306,18 +322,18 @@ div#region-preface-first {
     padding-bottom: 10px;
 }
 
-.page-search-api-solr-view .zone.zone-content.clearfix.container-12 {
+.page-search .zone.zone-content.clearfix.container-12 {
     padding-top: 27px;
 }
-.page-search-api-solr-view #region-content .view-header{
+.page-search #region-content .view-header{
     font-size:14px;
 } 
 body.page-user .view .summary .total,
-.page-search-api-solr-view #region-content .view-header span{
+.page-search #region-content .view-header span{
         color: #6AAAC1;
     vertical-align: middle;
 }
-.page-search-api-solr-view  #block-system-main{
+.page-search  #block-system-main{
     position: relative;
     right: -10px;
     /*width: 643px;*/
@@ -995,7 +1011,7 @@ body.page-contact .form-item-copy{
     display: none;
 }
 body.page-contact textarea{
-    padding-top: 
+    /*padding-top:*/ 
 }
 body.page-contact textarea,
 body.page-contact .form-item input{
@@ -1063,15 +1079,24 @@ body.page-user-orders- .views-field-commerce-total,
 body.page-user-orders- .views-field-field-commerce-bibilio-nid{
     display: none;
 }
-body.page-cart  #edit-submit{
+body.page-cart #region-preface-third,
+body.page-cart #edit-submit{
     display:none;
 }
 
-body.page-cart  .views-row.mlt{
-    margin-right: 20px;
-    position: relative;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+#sb-container .views-row.mlt{
+   border-bottom: 1px dotted;
+float: right;
+margin-bottom: 20px;
+margin-right: 20px;
+padding-bottom: 20px;
+position: relative;
+width: 95%;
+}
+body.page-cart  #sb-wrapper {
+  left: 20% !important;
+  width: 60% !important;
+  position: absolute;
 }
 body.page-cart  .views-row.mlt:not(:last-child) {
     border-bottom: 1px  solid gray;
@@ -1089,3 +1114,214 @@ body.page-checkout #edit-laxo-biblio-solr-base li {
     margin-bottom: 20px;
 }
   
+#tipsy-admin{
+    direction: ltr !important;
+}
+
+.delete-line-item.form-submit {
+color: transparent;
+height: 24px;
+width: 24px;
+padding:0px;
+margin:0px;
+cursor: pointer;
+background-image: url("/misc/message-24-error.png");
+border-width: 0px;
+transform: scale(0.7);
+-webkit-transform: scale(0.7);
+}
+.view-flag-bookmarks  .views-field.views-field-ops {
+  width: 10px !important;
+}
+.delete-line-item.form-submit.loading {
+    background-repeat:   no-repeat ;
+    
+    background-image: url("/misc/message-24-error.png"), url("/misc/throbber.gif") ;
+    background-position: center center, 0 -18px ;
+    border-width: 0px;
+    color: transparent;
+    height: 15px;
+    margin: 2px;
+    transform: scale(2);
+    -webkit-transform: scale(2);
+    width: 15px;
+    border-radius: 0px;
+    outline: none;
+}
+
+a.cart_export,
+a.buy_export{
+       background: url("/sites/all/themes/e_scholar/images/quote_btn_blue.png") no-repeat scroll 0 0 transparent;
+}
+a.get_url,
+a.free{
+       background: url("/sites/all/themes/e_scholar/images/url_btn_green.png") no-repeat scroll 0 3px  transparent;
+    
+}
+a.buy_url,
+a.cart_url{
+    background: url("/sites/all/themes/e_scholar/images/url_btn_orange.png") no-repeat scroll 0 0 transparent;
+}
+a.cart_export,
+a.buy_export,
+a.get_url,
+a.free,
+a.buy_url,
+a.cart_url{
+     color: white; 
+     display: block;
+    display: inline-block;
+    letter-spacing: 0.5px;
+    padding: 31px 5px 16px 53px;
+    text-align: center;
+    text-decoration: none;
+    width: 134px;
+}
+a.free{
+    padding-top: 28px;
+}
+.get_export{
+    display: none !important;
+}
+.cart_export .price ,
+.cart_url .price,
+.views-field-nid-1,
+.views-field-sku,
+.views-field-field-nid-1{
+    display:none;
+}
+
+.view-flag-bookmarks a.cart_export,
+.view-flag-bookmarks a.buy_export,
+.view-flag-bookmarks a.get_url,
+.view-flag-bookmarks a.free,
+.view-flag-bookmarks a.buy_url,
+.view-flag-bookmarks a.cart_url{
+      background-size: contain;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 22px 2px 11px 33px;
+    width: 123px;
+}
+.view-commerce-cart-form .buy_export, 
+.view-commerce-cart-form .cart_export {
+    background-size: contain !important;
+    font-size: 11px;
+    font-weight: bold;
+    height: 19px;
+    margin: 0 !important;
+    padding: 21px 0 0 25px;
+    text-align: center;
+    width: 109px;
+}
+.views-field-nothing .buy_export span{
+
+}
+.views-field-field-commerce .field-content{
+    display: inherit;
+    width: auto;
+}
+.view-search-api-solr .views-field-field-commerce a{
+      display: inline-block;
+    float: right;
+    margin: 0 30px;
+    position: relative;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.view-commerce-cart-block.view-id-commerce_cart_block .views-table {
+  display: block;
+  max-height: 200px !important;
+  overflow-y: scroll;
+}
+.views-field-field-commerce span.price {
+    color: inherit;
+    margin: 0 2px;
+}
+.view-flag-bookmarks  .views-field-field-commerce {
+    width: 150px;
+
+}
+
+.view-flag-bookmarks .views-field-nothing span {
+   display: inline-block;
+font-size: 0;
+height: 24px;
+overflow: hidden;
+position: relative;
+text-indent: 9999px;
+top: 10px;
+width: 24px !important;
+}
+.view-flag-bookmarks .views-field-nothing span{
+
+    background-image: url("/misc/message-24-error.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-width: 0px ;
+    color: transparent;
+    cursor: pointer;
+    transform-origin:top center;
+    -webkit-transform-origin:top center;
+    transform: scale(0.7);
+    -webkit-transform: scale(0.7);
+    margin: 0;
+    max-width: 24px;
+}
+.view-flag-bookmarks  th.views-field-ops {
+    background-image: none;
+
+}
+.view-flag-bookmarks th.views-field-ops{
+    min-width: 54px;
+}
+.view-flag-bookmarks  .views-field-ops {
+    display: none;
+}
+#block-views-flag-bookmarks-block-2 .views-field-biblio-custom1 p {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+.export .views-field-nothing a{
+    display: none;
+}
+body.page-user table.views-table .views-field-field-commerce {
+  width: 170px;
+}
+
+/*   ##  tipsy */
+.tipsy {
+    font-size: 10px;
+    padding: 5px;
+    position: absolute;
+    z-index: 100000;
+    font-size: 1.1em;
+}
+
+.tipsy-inner {
+    max-width: 650px;
+    padding: 20px;
+    background: none repeat scroll 0 0 #D9E6EB;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 1px 21px 35px -15px #B7B7B7;
+    color: black;
+    position: relative;
+    left: -100px;
+    
+}
+.tipsy-arrow {
+    background: url("/sites/all/themes/e_scholar/images/tipsy.gif") no-repeat scroll left top transparent;
+}
+.ajax-progress .throbber {
+    float: none;
+    height: 15px;
+    margin: 2px;
+    width: 15px;
+    position: absolute;
+}
+
+.page-cart .mlt_action.close_mlt > span{
+    position: static;
+}
