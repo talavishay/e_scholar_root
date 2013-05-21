@@ -1330,3 +1330,9 @@ body.page-user table.views-table .views-field-field-commerce {
 .view-empty .node-unpublished {
   background-color: transparent;
 }
+.page-biblio-import #edit-import-taxonomy .fieldset-wrapper{
+    display: block;
+}
+.page-biblio-import #edit-import-taxonomy {
+    height: auto;
+}
