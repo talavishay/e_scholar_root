@@ -132,8 +132,10 @@ class EndNoteXMLParser {
         break;
       case 'web-urls' :
       case 'pdf-urls' :
+          $this->urls = $name;
       case 'text-urls' :
       case 'related-urls' :
+          $this->urls = $name;
       case 'image-urls' :
         $this->urls = $name;
         break;
@@ -280,10 +282,15 @@ class EndNoteXMLParser {
               $this->node->biblio_url .= $data;
               break;
             case 'pdf-urls' :
+                $this->node->biblio_url .= $data;
+              break;
             case 'text-urls' :
             case 'image-urls' :
               break;
-            case 'related-urls' :
+          case 'related-urls' :
+            $this->node->biblio_url .= $data;
+              break;
+
           }
           break;
         case 'title':
