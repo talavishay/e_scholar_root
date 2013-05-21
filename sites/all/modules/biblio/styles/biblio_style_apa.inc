@@ -84,7 +84,7 @@ function biblio_style_apa($node) {
       $output .= ". </span> \n";
       $output .= !empty($editors) ? '(' . theme('biblio_format_authors', array('contributors' => $editors, 'options' => $author_options)) . ', Ed.).' : "";
       $output .= ($node->biblio_secondary_title) ? '<u><i>' . check_plain($node->biblio_secondary_title) . '. ' : '<u>';
-      $output .= ($node->biblio_volume) ? check_plain($node->biblio_volume) . ($node->biblio_issue ? '</i></u>(' . check_plain($node->biblio_issue) . '),&nbsp;' : ',</u> ') : '</i></u> ';
+      $output .= ($node->biblio_volume) ? check_plain($node->biblio_volume) . ($node->biblio_issue ? '</i></u>(' . check_plain($node->biblio_issue) . '),&nbsp;' : ',</i></u> ') : '</i></u> ';
       //  $output .= ($node->biblio_issue) ? '('. check_plain($node->biblio_issue).')' :'';
       $output .= ($node->biblio_pages) ? check_plain($node->biblio_pages) . '.' : '';
       break; // generic
