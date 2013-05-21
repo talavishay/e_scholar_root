@@ -1327,3 +1327,6 @@ body.page-user table.views-table .views-field-field-commerce {
 .page-cart .mlt_action.close_mlt > span{
     position: static;
 }
+.view-empty .node-unpublished {
+  background-color: transparent;
+}
