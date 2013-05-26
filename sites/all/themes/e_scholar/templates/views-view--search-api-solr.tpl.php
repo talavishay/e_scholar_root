@@ -52,7 +52,7 @@
   <?php endif; ?>
     <?php 
     
-    if(isset($empty)):?>
+    if(!isset($empty)):?>
        <div id="display_mode"><span id="min"><?php print t('min view');?></span>|<span id="max"><?php print t('max view');?></span></div>
        <?php endif; ?>
   <?php if ($pager): ?>
