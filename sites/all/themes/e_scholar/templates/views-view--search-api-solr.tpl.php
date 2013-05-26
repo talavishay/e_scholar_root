@@ -52,8 +52,10 @@
   <?php endif; ?>
     <?php 
     
-    if(gettype($empty) === "undefined" ):?>
+    if(isset($empty)):?>
+<?php    if(gettype($empty) === "undefined" ):?>
        <div id="display_mode"><span id="min"><?php print t('min view');?></span>|<span id="max"><?php print t('max view');?></span></div>
+       <?php endif; ?>
        <?php endif; ?>
   <?php if ($pager): ?>
  
