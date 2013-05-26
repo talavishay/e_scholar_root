@@ -176,9 +176,14 @@ line-height: 28px;
     margin-bottom: 0px !important;
 }
 
+.views-exposed-form .views-exposed-widget input{
+    width: 100%;
+}
 .views-exposed-form .views-exposed-widget {
-    float: right;
+    clear: both;
+    float: left !important;
     padding: 0;
+    width: 100%;
 }
 
 #block-views-exp-search-api-solr-page{
