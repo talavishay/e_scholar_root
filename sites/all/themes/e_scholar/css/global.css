@@ -1341,3 +1341,15 @@ body.page-user table.views-table .views-field-field-commerce {
 .page-biblio-import #edit-import-taxonomy {
     height: auto;
 }
+
+.page-editor th {
+    font-size: 12px !important;
+  text-align: center;
+}
+.page-editor .views-field-changed,
+.page-editor .views-field-title {
+    font-size: 12px;
+}
+.page-editor .views-field-title {
+    font-weight: bold;
+}
