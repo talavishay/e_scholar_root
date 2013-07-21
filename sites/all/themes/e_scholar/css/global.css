@@ -181,7 +181,7 @@ line-height: 28px;
 }
 .views-exposed-form .views-exposed-widget {
     clear: both;
-    float: left !important;
+    float: left;
     padding: 0;
     width: 100%;
 }

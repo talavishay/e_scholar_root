@@ -1,0 +1,13 @@
+<?php
+/**
+ * @file
+ * Code for the editor feature.
+ */
+
+include_once 'editor.features.inc';
+function editor_views_pre_render($view){
+    if($view->name === "editor"){
+        drupal_add_css(drupal_get_path("module", "editor").'/editor.css');
+        drupal_add_js(drupal_get_path("module", "editor").'/editor.js', array("type" => "file"));
+    }
+}

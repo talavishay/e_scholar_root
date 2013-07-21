@@ -1,0 +1,66 @@
+<?php
+//function biblio_url_validation_schema_alter($schema) {
+//    $schema['biblio']['fields']['new_field'] = array(
+//        'type' => 'int',
+//        'not null' => TRUE,
+//        'unsigned' => TRUE,
+//        'default' => 0,
+//        'description' => 'Field added by my_module',
+//      );
+//}
+function biblio_url_validation_install(){
+    variable_set("biblio_url_validation_time_period",1296000 );
+    $schema = drupal_get_schema('biblio');
+    db_add_field('biblio', 'buv_checked', $schema['fields']['buv_checked']);
+    db_add_field('biblio', 'buv_queued', $schema['fields']['buv_queued']);
+    db_add_field('biblio', 'buv_broken', $schema['fields']['buv_broken']);
+  db_update('system')
+    ->fields(array('weight' => 101))
+    ->condition('name', 'biblio_url_validation', '=')
+    ->execute();
+
+}
+function biblio_url_validation_uninstall(){
+    variable_del("biblio_url_validation_time_period");
+    db_drop_field('biblio', 'buv_checked');
+    db_drop_field('biblio', 'buv_queued');
+    db_drop_field('biblio', 'buv_broken');
+}
+//function biblio_url_validation_schema() {
+//    $schema['biblio_url_validation']= array(
+//        'fields' => array(
+//            'nid' => array(
+//                'type' => 'int',
+//                'not null' => TRUE,
+//                'default' => 0,
+//                'description' => '',
+//            ),
+//            'broken' => array(
+//                'type' => 'text',
+//                'not null' => FALSE,
+//                'description' => 'store request data on validation failure',
+//            ),
+//            'checked' => array(
+//                'type' => 'int',
+//                'unsigned' => TRUE,
+//                'default' => 0,
+//                'description' => 'Last time biblio url was checked for validation, as Unix timestamp.*added by biblio_url_validation module',
+//            ),
+//            'queued' => array(
+//                'type' => 'int',
+//                'unsigned' => TRUE,
+//                'default' => null,
+//                'description' => 'Time when this feed was queued for refresh, 0 if not queued.*added by biblio_url_validation module',
+//            )
+//        ),
+//        'foreign keys' => array(
+//            'node' => array(
+//                'table' => 'node',
+//                'columns' => array('nid' => 'nid'),
+//            )
+//        ),
+//        'primary key' => array('nid')
+//        
+//    );
+//    return $schema;
+//}

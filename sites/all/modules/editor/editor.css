@@ -1,0 +1,65 @@
+
+.views-widget-filter-nid,
+.views-widget-filter-status,
+.views-widget-filter-uid,
+.views-widget-filter-biblio_custom7{
+  margin-right: 20px;
+  width: 22% !important;
+  display: block;
+  clear: none !important;
+}
+.views-widget-filter-status{
+    width:auto;
+}
+
+.broken td {
+  background: none repeat scroll 0 0 rgba(255, 0, 0, 0.4) !important;
+}
+#admin-menu {
+  direction: rtl;
+  text-align: right;
+}
+div.views-exposed-widget {
+  clear: none !important;
+  float: right;
+  margin-right: 2% !important;
+  padding: 0 !important;
+}
+  
+div.views-exposed-widget[id*=tid] {
+  width: 48% !important;
+    
+}
+#edit-field-biblio-qualitive-tid-wrapper{
+   clear: left !important; 
+}
+.views-exposed-form {
+  direction: rtl !important;
+  text-align: right;
+}
+.views-exposed-form .views-exposed-widget {
+  width: auto !important;
+  float: right !important;
+}
+#order_wrap{
+    border:1px solid gray;
+}
+.views-widget-filter-field_biblio_research_tid {
+  margin-bottom: 20px;
+}
+.tipsy-inner{
+    left: 0 !important;
+    word-break: break-all;
+}
+.vbo-fieldset-select-all * {
+    display: inline;
+    font-size: 16px;
+}
+.vbo-fieldset-select-all {
+    width: auto !important;
+}
+table caption {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px 0;
+}

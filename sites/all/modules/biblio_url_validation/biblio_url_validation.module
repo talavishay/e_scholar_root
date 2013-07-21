@@ -1,0 +1,259 @@
+<?php
+//include_once 'biblio_url_validation.features.inc';
+function biblio_url_validation_node_presave($node){
+    if($node->type === "biblio"){
+        if($node->biblio_custom7 === ""){
+            $node->biblio_custom7 = null;
+        }
+    }
+}
+function biblio_url_validation_form_node_form_alter(&$form, &$form_state, $form_id) {
+    if( $form_id === "biblio_node_form"){
+        if($form["#node"]->biblio_custom7 === "broken"){
+            drupal_add_css('#edit-biblio-url{
+                                background: none repeat scroll 0 0 rgba(255, 0, 0, 0.4);
+                            }',array("type" => "inline"));
+            drupal_add_js(array("broken_nid" =>$form["#node"]->nid ), "setting"); 
+            drupal_add_js(drupal_get_path("module", "biblio_url_validation").'/biblio_url_validation.js'); 
+        }
+    }
+}
+function biblio_url_validation_schema_alter(&$schema) {
+    $schema['biblio']['fields']['buv_checked'] = array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Last time biblio url was checked for validation, as Unix timestamp.*added by biblio_url_validation module',
+    );
+    $schema['biblio']['fields']['buv_queued'] = array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Time when this feed was queued for refresh, 0 if not queued.*added by biblio_url_validation module',
+    );
+    $schema['biblio']['fields']['buv_broken'] = array(
+      'type' => 'text',
+        'not null' => FALSE,
+        'description' => '',
+    );
+}
+function biblio_url_validation_cron_queue_info() {
+    if(isset($GLOBALS["argv"])){
+        if($GLOBALS["argv"][1] ==="cron"){
+            drupal_set_message("cron_queue_info - ".date('i.s'));
+            $queue['biblio_url_validation_queue'] = array(    
+              'worker callback' => '_biblio_url_validation_check_url',
+                'time' => 600
+            );
+            return $queue;
+        }
+    }
+}
+function manual_biblio_url_validation_check_url($nid){    
+    $node = node_load($nid);
+    if(isset($_POST["url"])){
+        $data["url"] = urldecode(trim(strip_tags($_POST["url"])));
+    } else {
+        $data["url"] = $node->biblio_url;
+    }
+    $data["nid"] = $nid;
+    $data["skip"] = true;
+    if(_biblio_url_validation_check_url($data)){
+//        drupal_set_message("node ".$node->nid." has been set unbroken and published");
+        echo "valid";
+    } else {
+        echo "not_valid";
+    };
+    
+}
+function _biblio_url_validation_check_url($data){
+    $url = gettype($data) === "array" ? $data["url"] : $data->biblio_url; 
+    $nid = gettype($data) === "array" ? $data["nid"] : $data->nid; 
+    $valid = false;
+    $arg = arg();
+    // issue a HEAD requet and parse headers in order to check for pdf/doc content-type
+    $response = drupal_http_request($url ,array("method" => "HEAD"));           
+    if ($response->code === "200" && ( stripos($response->headers["content-type"], "pdf") || stripos($response->headers["content-type"], "doc")) ){
+       $valid = true;
+    } else {
+        // in a case where pdf is not being served directly 
+        if( $response->code === "200" && ( preg_match("/application\/octet-stream/i",$response->headers["content-type"])|| preg_match("/html/i",$response->headers["content-type"]) ) ) {
+            // issue a GET requet and parse respond data in order to check for pdf/doc content
+            $getresponse = drupal_http_request($url );        
+            if ($getresponse->code === "200" && ( stripos($getresponse->data, "pdf") || stripos($getresponse->data, "doc")) ){
+                $valid = true;
+            } 
+        }
+    }
+    if($valid ) {
+        if($arg[0] !== "validate_url"){
+            _biblio_url_validation_valid($nid);
+        }
+        return true;
+    } else {
+        if($arg[0] !== "validate_url"){
+            _biblio_url_validation_unvalid($data, $response);
+        }
+        return false;
+    };
+};
+function _biblio_url_validation_valid($nid){    
+    $node = node_load($nid);
+    
+    $node->buv_broken = NULL;
+    $node->buv_checked  = time();
+    $node->buv_queued = 0;
+    $node->biblio_custom7 = date('c');
+
+    if( arg(0) === "valid" ){
+        $node->status = 1;        
+        $node->biblio_url = urldecode(trim(strip_tags($_POST["url"])));
+        echo "saved";
+    }
+    node_save($node);
+};
+function _biblio_url_validation_unvalid($data, $response){
+    $nid = gettype($data) === "array" ? $data["nid"]:$data->nid ;
+    $node = node_load($nid);
+    $node->buv_broken = serialize($response);
+    $node->buv_checked  = time();
+    $node->status = 0;
+    $node->buv_queued = 0;
+    $node->biblio_custom7 = "broken";
+    node_save($node);
+    $server = search_api_server_load(1);
+    $server_url = 'http://'.$server->options["host"].':'.$server->options["port"].$server->options["path"];
+    $url = $server_url.'/update?stream.body=<delete><query>id:solr_node_index-'.$node->nid.'</query></delete>&commit=true';
+    $response = drupal_http_request($url ,array("method" => "HEAD"));        
+};
+function biblio_url_validation_menu(){
+    $items["valid/%"] = array(
+        'page callback' => '_biblio_url_validation_valid',
+        'page arguments' => array(1),
+        'type' => MENU_CALLBACK,
+        'access callback' => '_user_has_role',
+        'access arguments' => array(array('editor'))
+    );
+    $items["validate_url/%"] = array(
+        'page callback' => 'manual_biblio_url_validation_check_url',
+        'page arguments' => array(1),
+        'type' => MENU_CALLBACK,
+        'access callback' => '_user_has_role',
+        'access arguments' => array(array('editor'))
+    );
+    $items["a"] = array(
+        'page callback' => 'resave_all_bibio_node',
+        'page arguments' => array(1),
+        'type' => MENU_CALLBACK,
+        'access callback' => '_user_has_role',
+        'access arguments' => array(array('editor'))
+        
+    );
+    return $items;
+}
+function _user_has_role($role = "adminstrator") {  
+  global $user;
+    if (in_array($role, $user->roles) || $user->name == "admin" || drupal_is_cli() ) {
+      return TRUE;
+    }
+  return FALSE; 
+}
+function resave_all_bibio_node(){
+//    @set_time_limit(6000);
+    $nids = db_query("SELECT nid FROM {node} WHERE type='biblio'")->fetchCol();
+    foreach (node_load_multiple($nids) as $node) {
+        node_save($node);
+    }
+    drupal_set_message("resave done");
+    echo date('c')."  resave done";
+    exit();
+}
+function biblio_url_validation_cron(){
+    drupal_set_message("done");
+    $hour = date('G'); // 0 .. 23
+//    if (($hour >= 0 && $hour <= 24)) { 
+    
+//    if (($hour >= 0 && $hour <= 6 ) ) { 
+    if(isset($GLOBALS["argv"])){
+        if($GLOBALS["argv"][1] ==="cron"){
+    
+        @set_time_limit(600);
+        $result = db_query('SELECT b.biblio_url, b.nid  FROM {biblio} b LEFT JOIN {node} n ON b.nid = n.nid WHERE b.buv_queued = 0 AND b.buv_checked + :refresh < :time AND b.buv_broken IS NULL AND n.status = 1', array(
+            ':time' => time(),
+            ':refresh' => variable_get("biblio_url_validation_time_period")
+        ));
+        $queue = DrupalQueue::get('biblio_url_validation_queue');
+        $counter =array();
+        foreach ($result as $biblio) {
+            if ($queue->createItem($biblio)) {
+                // Add timestamp to avoid queueing item more than once.
+                db_update('biblio')
+                  ->fields(array('buv_queued' => 1))
+                  ->condition('nid', $biblio->nid)
+                  ->execute();
+                }
+                $counter[] = 'x';
+        }
+        drupal_set_message(count($counter )." articles queud for url validation");
+    }
+    }
+}
+function biblio_url_validation_queue_up_node($value){
+    $queue = DrupalQueue::get("biblio_url_validation_queue");
+    db_update('biblio')
+       ->fields(array('buv_queued' => 1))
+       ->fields(array('biblio_custom7' => "queued"))
+       ->condition('nid', $value->nid)
+       ->execute();
+    $queue->createItem($value); // each item passed as param to worker
+};
+function biblio_url_validation_commerce_cart_order_refresh($order_wrapper){
+    $arg = arg();
+if( $arg[0] === "cart" || ($arg[0] === "checkout"  )){
+        foreach ($order_wrapper->commerce_line_items as $delta => $line_item_wrapper) {
+            $line_item_val =  $line_item_wrapper->value();
+            $id = $line_item_val->line_item_id;
+            $node = node_load($line_item_val->field_nid["und"][0]["value"]);
+            $data = array("nid"=> $node->nid, "url" => $node->biblio_url, "changed" => $node->changed);  
+            if(!_biblio_url_validation_check_url($data)){
+                commerce_cart_order_product_line_item_delete($order_wrapper->value(), $id, FALSE);
+                drupal_set_message(t('Sorry, but e-scholar system found the article "'.$node->biblio_custom1.'" is no longer available & there for removed it from your cart'), "error");
+                $order = commerce_cart_order_load();
+                if($order === false){
+                    drupal_goto($_SERVER["HTTP_REFERER"]);
+                } elseif(count($order->commerce_line_items) == 0){
+                        drupal_goto($_SERVER["HTTP_REFERER"]);
+                }
+                
+            }
+        }
+    }
+}
+//$biblio_url_validation_time_period = (int) variable_get("biblio_url_validation_time_period");
+//    if($data["changed"]< time()-$biblio_url_validation_time_period ){
+//        }
+//function biblio_url_validation_views_pre_render($view){
+//    if($view->name === "broken"){
+//        drupal_add_css('.view table div.contextual-links-wrapper { 
+//                            position:relative;
+//                        }
+//                        .view table div.contextual-links-wrapper .contextual-links{
+//                         
+//                        }
+//                        .views-field.views-field-biblio-url {
+//                            max-width: 50%;
+//                        }
+//                        .views-field.views-field-biblio-url a{
+//                            display: inline-block;
+//                            width: 500px;
+//                            word-wrap: break-word;
+//                            text-align: left;
+//                        }
+//                        .view-broken table {
+//                            max-width: 100%;
+//                        }
+//                        ',array("type" => "inline"));
+//    drupal_add_js('jQuery(document).ready(function(){jQuery(".contextual-links .nid.first a").prepend("סמן את מאמר מס\' ").append(" כתקין");})', "inline");
+//    }
+//    
+//}
