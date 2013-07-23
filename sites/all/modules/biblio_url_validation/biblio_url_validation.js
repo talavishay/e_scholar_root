@@ -10,7 +10,7 @@ if(typeof(Drupal.settings.broken_nid) !== "undefined"){
         },function(res){
             if(res === "valid"){
                 jQuery("#edit-biblio-url").css("background-color", "rgba(0, 255, 0, 0.4)");
-                var text = "the url has been found VALID ! \n press ok to publish the article OR canel to stay in the edit form";
+                var text = "the url has been found VALID ! \n press ok to save the url and publish the article OR canel to stay in the edit form";
                 if (confirm(text)){
                     jQuery.post(
                             "/valid/"+Drupal.settings.broken_nid, {

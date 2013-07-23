@@ -63,3 +63,7 @@ table caption {
   font-weight: bold;
   padding: 5px 0;
 }
+.views-table tr td.views-field-biblio-secondary-title {
+  min-width: 130px !important;
+  word-break: break-all;
+}

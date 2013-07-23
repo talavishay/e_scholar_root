@@ -39,7 +39,6 @@ function biblio_url_validation_schema_alter(&$schema) {
 }
 function biblio_url_validation_cron_queue_info() {
     if(isset($GLOBALS["argv"])){
-        if($GLOBALS["argv"][1] ==="cron"){
             drupal_set_message("cron_queue_info - ".date('i.s'));
             $queue['biblio_url_validation_queue'] = array(    
               'worker callback' => '_biblio_url_validation_check_url',
@@ -47,7 +46,6 @@ function biblio_url_validation_cron_queue_info() {
             );
             return $queue;
         }
-    }
 }
 function manual_biblio_url_validation_check_url($nid){    
     $node = node_load($nid);
@@ -169,14 +167,7 @@ function resave_all_bibio_node(){
     exit();
 }
 function biblio_url_validation_cron(){
-    drupal_set_message("done");
-    $hour = date('G'); // 0 .. 23
-//    if (($hour >= 0 && $hour <= 24)) { 
-    
-//    if (($hour >= 0 && $hour <= 6 ) ) { 
     if(isset($GLOBALS["argv"])){
-        if($GLOBALS["argv"][1] ==="cron"){
-    
         @set_time_limit(600);
         $result = db_query('SELECT b.biblio_url, b.nid  FROM {biblio} b LEFT JOIN {node} n ON b.nid = n.nid WHERE b.buv_queued = 0 AND b.buv_checked + :refresh < :time AND b.buv_broken IS NULL AND n.status = 1', array(
             ':time' => time(),
@@ -195,7 +186,6 @@ function biblio_url_validation_cron(){
                 $counter[] = 'x';
         }
         drupal_set_message(count($counter )." articles queud for url validation");
-    }
     }
 }
 function biblio_url_validation_queue_up_node($value){
