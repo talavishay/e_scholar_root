@@ -1,14 +1,14 @@
 <?php
 //include_once 'biblio_url_validation.features.inc';
 function biblio_url_validation_node_presave($node){
-    if($node->type === "biblio"){
+    if($node->type === "biblio" && isset($node->biblio_custom7)){
         if($node->biblio_custom7 === ""){
             $node->biblio_custom7 = null;
         }
     }
 }
 function biblio_url_validation_form_node_form_alter(&$form, &$form_state, $form_id) {
-    if( $form_id === "biblio_node_form"){
+    if( $form_id === "biblio_node_form" && isset($form["#node"]->biblio_custom7) ){
         if($form["#node"]->biblio_custom7 === "broken"){
             drupal_add_css('#edit-biblio-url{
                                 background: none repeat scroll 0 0 rgba(255, 0, 0, 0.4);
