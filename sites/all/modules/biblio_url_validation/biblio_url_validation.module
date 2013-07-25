@@ -71,7 +71,7 @@ function _biblio_url_validation_check_url($data){
     $arg = arg();
     // issue a HEAD requet and parse headers in order to check for pdf/doc content-type
     $response = drupal_http_request($url ,array("method" => "HEAD"));           
-    if ($response->code === "200" && ( stripos($response->headers["content-type"], "pdf") || stripos($response->headers["content-type"], "doc")) ){
+    if ($response->code === "200" && ( stripos($response->headers["content-type"], "pdf") || stripos($response->headers["content-type"], "doc") || stripos($response->headers["content-type"], "word")) ){
        $valid = true;
     } else {
         // in a case where pdf is not being served directly 
