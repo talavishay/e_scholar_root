@@ -151,7 +151,7 @@ function biblio_url_validation_menu(){
 }
 function _user_has_role($role = "adminstrator") {  
   global $user;
-    if (in_array($role, $user->roles) || $user->name == "admin" || drupal_is_cli() ) {
+    if (in_array("editor", $user->roles) || $user->name == "admin" || drupal_is_cli() ) {
       return TRUE;
     }
   return FALSE; 
