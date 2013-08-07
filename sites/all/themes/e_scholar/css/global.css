@@ -1312,7 +1312,7 @@ body.page-user table.views-table .views-field-field-commerce {
     padding: 20px;
     background: none repeat scroll 0 0 #D9E6EB;
     border-radius: 10px 10px 10px 10px;
-    box-shadow: 1px 21px 35px -15px #B7B7B7;
+    box-shadow: 0px 3px 10px 0px #444;
     color: black;
     position: relative;
     left: -100px;
