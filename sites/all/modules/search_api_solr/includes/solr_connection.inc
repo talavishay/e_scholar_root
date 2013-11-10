@@ -108,6 +108,11 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
   const STATS_SERVLET_4 = 'admin/mbeans?wt=xml&stats=true';
 
   /**
+   * Path to the file servlet.
+   */
+  const FILE_SERVLET = 'admin/file';
+
+  /**
    * The options passed when creating this connection.
    *
    * @var array
@@ -141,6 +146,15 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
    * @var string
    */
   protected $http_auth;
+
+  /**
+   * The stream context to use for requests to the Solr server.
+   *
+   * Defaults to NULL (= pass no context at all).
+   *
+   * @var string
+   */
+  protected $stream_context;
 
   /**
    * Cache for the metadata from admin/luke.
@@ -249,23 +263,31 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
   }
 
   /**
-   * Sets whether this connection will use soft commits when comitting.
-   *
-   * @param $soft_commit
-   *   TRUE if soft commits should be used, FALSE otherwise. Default is FALSE.
+   * Implements SearchApiSolrConnectionInterface::setSoftCommit().
    */
   public function setSoftCommit($soft_commit) {
     $this->soft_commit = (bool) $soft_commit;
   }
 
   /**
-   * Tells whether this connection will use soft commits when comitting.
-   *
-   * @return
-   *   TRUE if soft commits will be used, FALSE otherwise.
+   * Implements SearchApiSolrConnectionInterface::getSoftCommit().
    */
   public function getSoftCommit() {
     return $this->soft_commit;
+  }
+
+  /**
+   * Implements SearchApiSolrConnectionInterface::setStreamContext().
+   */
+  public function setStreamContext($stream_context) {
+    $this->stream_context = $stream_context;
+  }
+
+  /**
+   * Implements SearchApiSolrConnectionInterface::getStreamContext().
+   */
+  public function getStreamContext() {
+    return $this->stream_context;
   }
 
   /**
@@ -582,6 +604,9 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
     if ($this->http_auth) {
       $options['headers']['Authorization'] = $this->http_auth;
     }
+    if ($this->stream_context) {
+      $options['context'] = $this->stream_context;
+    }
 
     $result = drupal_http_request($url, $options);
 
@@ -614,13 +639,13 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
   /**
    * Implements SearchApiSolrConnectionInterface::escape().
    */
-  public static function escape($value) {
+  public static function escape($value, $version = 0) {
     $replacements = array();
 
     $specials = array('+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', "\\");
     // Solr 4.x introduces regular expressions, making the slash also a special
     // character.
-    if ($this->getSolrVersion() >= 4) {
+    if ($version >= 4) {
       $specials[] = '/';
     }
 
@@ -696,7 +721,7 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
    */
   public function setBaseUrl($url) {
     $this->base_url = $url;
-    unset($this->update_url);
+    $this->update_url = NULL;
   }
 
   /**
@@ -809,7 +834,7 @@ class SearchApiSolrConnection implements SearchApiSolrConnectionInterface {
       $rawPost = "<$type$waitSearcher />";
     }
     else {
-      $softCommit = ' softCommit="' . $this->soft_commit . '"' ? 'true' : '';
+      $softCommit = ($this->soft_commit) ?  ' softCommit="true"' : '';
       $rawPost = "<$type$waitSearcher$softCommit />";
     }
 

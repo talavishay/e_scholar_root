@@ -145,3 +145,14 @@ function spamicide_update_7000() {
   }
   return $ret;
 }
+
+/**
+ * 7001 -   Adds spamicide_description to variables table making it configurable
+ */
+function spamicide_update_7001() {
+  $ret = array();
+  if (is_null(variable_get('spamicide_description'))) {
+    variable_set('spamicide_description', 'To prevent automated spam submissions leave this field empty.');
+  }
+  return $ret;
+}

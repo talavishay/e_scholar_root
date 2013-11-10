@@ -1,3 +1,9 @@
+ Spamicide-7.x-1.x July 2013
+ ===========================
+ answer to issue #1762484 adding the ability to use global custom message
+ fix for issues #1787774, #1942834 and #1979930 of wrong destination
+ fix for issues #1795524 and #1317366 moved spamicide menu items to config/people
+ 
 
 Spamicide-7.x-1.x May 2011
 ==========================
@@ -5,7 +11,6 @@ Spamicide-7.x-1.x May 2011
 -installation creates spamicide directory and adds fee_me.css
 -uninstallation removes the directory
  
-
 Spamicide-6.x-1.5 Nov 2010
 ==========================
 

@@ -207,7 +207,7 @@ class rtf {
 
   // Header
   function getHeader() {
-    $header_buffer = "\\rtf{$this->rtf_version}\\ansicpg1252\\deff0\\deftab{$this->tab_width}\n\n";
+    $header_buffer = "\\rtf{$this->rtf_version}\\ansi\\deff0\\deftab{$this->tab_width}\n\n";
 
     return $header_buffer;
   }
@@ -308,10 +308,10 @@ class rtf {
 
   // Parse the text input to RTF
   function parseDocument() {
-     $doc_buffer = html_entity_decode($this->document, ENT_QUOTES, "utf-8");
-//    $doc_buffer = utf8_decode($doc_buffer);
-//    $doc_buffer = $this->specialCharacters($doc_buffer);
-    
+    //$doc_buffer = $this->specialCharacters(html_entity_decode($this->document));
+    $doc_buffer = html_entity_decode($this->document, ENT_QUOTES, "utf-8");
+    $doc_buffer = utf8_decode($doc_buffer);
+    $doc_buffer = $this->specialCharacters($doc_buffer);
     if (preg_match("/<ul>(.*?)<\/ul>/mi", $doc_buffer)) {
       $doc_buffer = str_replace("<ul>", "", $doc_buffer);
       $doc_buffer = str_replace("</ul>", "", $doc_buffer);

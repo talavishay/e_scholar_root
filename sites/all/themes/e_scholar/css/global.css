@@ -1353,3 +1353,6 @@ body.page-user table.views-table .views-field-field-commerce {
 .page-editor .views-field-title {
     font-weight: bold;
 }
+.page-broken {
+	direction: ltr !important;
+}

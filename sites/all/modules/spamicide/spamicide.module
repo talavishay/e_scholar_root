@@ -28,7 +28,7 @@ function spamicide_menu() {
     'access arguments' => array('administer spamicide'),
     //'access callback' => TRUE,
   );
-  $items['admin/config/spamicide/form'] = array(
+  $items['admin/config/peoplespamicide/form'] = array(
     'title' => 'Forms',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
@@ -36,7 +36,7 @@ function spamicide_menu() {
   );
 
   // form for adding spamicide form protection
-  $items['admin/config/spamicide/spamicide_form/add/%'] = array(
+  $items['admin/config/peoplespamicide/spamicide_form/add/%'] = array(
     'title' => 'Set Spamicide form',
     'description' => "Add or edit form_id's to protect with Spamicide.",
     'page callback' => 'drupal_get_form',
@@ -123,6 +123,13 @@ function spamicide_admin_form() {
     '#description' => t("Set the spamicide directory name to further hide it's signature."),
     '#default_value' => variable_get('spamicide_dir', "spamicide"),
   );
+  $form['spamicide_description'] = array(
+      '#type' => 'textfield',
+      '#size' => 90,
+      '#title' => t('Spamicide Description Message'),
+      '#description' => t("Set the spamicide description message to further hide it's signature."),
+      '#default_value' => variable_get('spamicide_description', "To prevent automated spam submissions leave this field empty."),
+  );
   $form['spamicide_forms'] = array(
     '#type' => 'fieldset',
     '#title' => t('Add Spamicide to a form or remove an added form'),
@@ -197,20 +204,19 @@ function theme_spamicide_admin_settings($variables) {
  */
 function spamicide_admin_form_validate($form, &$form_state) {
   foreach ($form_state['values']['spamicide_form'] as $spamicide_form_id => $data) {
-    if (!$data['form_field']){
+    if (!$data['form_field']) {
       form_set_error('spamicide_form][' . $spamicide_form_id . '][form_field', t("%field field name cannot be empty", array('%field' => $spamicide_form_id)));
     }
     if (preg_match_all('[\W]', $data['form_field'], $str)) {
       form_set_error('spamicide_form][' . $spamicide_form_id . '][form_field', t("Only AlphaNumeric characters or the underscore please"));
     }
   }
-  if (preg_match_all('[\W]', $form_state['values']['spamicide_dir'], $str)) {
-    form_set_error('spamicide_dir', t("Only AlphaNumeric characters or the underscore please"));
-  }
-  if (!$form_state['values']['spamicide_dir']){
+  if (!$form_state['values']['spamicide_dir']) {
     form_set_error('spamicide_dir', t("Spamicide directory name cannot be empty"));
   }
-  if ($form_state['values']['spamicide_dir'] != variable_get('spamicide_dir')) {
+  if (preg_match_all('[\W]', $form_state['values']['spamicide_dir'], $str)) {
+    form_set_error('spamicide_dir', t("Only AlphaNumeric characters or the underscore please"));
+  }else if ($form_state['values']['spamicide_dir'] != variable_get('spamicide_dir')) {
     $path = file_default_scheme() . '://' . $form_state['values']['spamicide_dir'];
     if (is_dir($path)) {
       form_set_error('spamicide_dir', t("Unable to create new directory, it already exists, please choose another name"));
@@ -218,6 +224,9 @@ function spamicide_admin_form_validate($form, &$form_state) {
     elseif (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
       form_set_error('spamicide_dir', t("Unable to create new directory, please double check file system permissions and try again"));
     }
+  }
+  if (!$form_state['values']['spamicide_description']) {
+    form_set_error('spamicide_description', t("The description should not be emtpy for accessibility purposes"));
   }
 }
 
@@ -233,6 +242,9 @@ function spamicide_admin_form_submit($form, &$form_state) {
     if ($form_state['values']['spamicide_dir'] != variable_get('spamicide_dir')) {
       file_unmanaged_delete_recursive(file_default_scheme() . '://' . variable_get('spamicide_dir'));
       variable_set('spamicide_dir', $form_state['values']['spamicide_dir']);
+    }
+    if ($form_state['values']['spamicide_description'] != variable_get('spamicide_description')) {
+      variable_set('spamicide_description', $form_state['values']['spamicide_description']);
     }
     foreach ($form_state['values']['spamicide_form'] as $spamicide_form_id => $data) {
       // create an array of the files in the spamdir and check it
@@ -349,7 +361,7 @@ function spamicide_delete_confirm_submit($form, &$form_state) {
  * @param $form
  */
 function spamicide_form_alter(&$form, &$form_state, $form_id) {
-  if(strpos($form_id, 'search') !== FALSE) {//ignore the search forms
+  if (strpos($form_id, 'search') !== FALSE || strpos($form_id, 'update_script') !== FALSE) {//ignore the search & update forms
     return;
   }
   module_load_include('inc', 'spamicide');
@@ -357,17 +369,20 @@ function spamicide_form_alter(&$form, &$form_state, $form_id) {
     if ($spamicide_field) {
       drupal_add_css(file_default_scheme() . '://' . variable_get('spamicide_dir', 'spamicide') . '/' . $spamicide_field . '.css');
         $spamicide_description = _spamicide_get_description();
+        $spamicide_destination = drupal_get_destination();
         $form[$spamicide_field] = array(
+          '#title' => 'title',
           '#type' => 'textfield',
           '#size' => 20,
           '#description' => check_plain($spamicide_description),
-          //'#pre_render' => array('spamicide_pre_render_place_spamicide'),
+          //'#pre_render' => array('spamicide_pre_render'),
+          '#pre_render' => array('spamicide_pre_render_place_spamicide'),
           '#name' => $spamicide_field,
           '#post_render' => array('_spamicide_field_post_render')
         );
         $form['destination'] = array(
           '#type' => 'value',
-          '#value' => drupal_get_destination(),
+          '#value' => $spamicide_destination['destination'],
         );
         $form['spamicide']['#element_validate'] = array('spamicide_validate');
 
@@ -386,6 +401,11 @@ function spamicide_form_alter(&$form, &$form_state, $form_id) {
     else {
       return;
     }
+}
+
+function spamicide_pre_render($element) {
+  // Todo 
+  return ($element);
 }
 
 /**
