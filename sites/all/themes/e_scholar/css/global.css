@@ -1,6 +1,9 @@
 
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+ul {
+    padding-right: 20px;
+}
 .views-ui-dialog fieldset{
     direction: ltr;
 }
@@ -22,7 +25,7 @@ body{
 *{
        font-family: arial !important;
 }
-body.front.not-logged-in #first-time{
+.front #first-time{
     display: none;
 }
 
@@ -458,18 +461,16 @@ margin: 0px;
     padding-top: 12px;
 }
 
-/*  HOMEPAGE    */
+/*  HOMEPAGE    
 body.front div#region-preface-second{
     margin-bottom: 50px;
 }
-
-body.front h1#page-title,
-body.front h2.block-title,
-#block-views-homepage-banner-block .views-field-title{
+*/
+body.front h1#page-title{
     display: none;
 }
 body.front div#zone-preface-wrapper {
-    margin-bottom: 31px;
+    margin-bottom: 0px;
 }
 body.front #block-block-2 p{
     font-size: 14px;
@@ -1190,6 +1191,9 @@ a.free{
 .get_export{
     display: none !important;
 }
+.free + .buy_export {
+  display: none !important;
+}
 .cart_export .price ,
 .cart_url .price,
 .views-field-nid-1,
@@ -1342,17 +1346,91 @@ body.page-user table.views-table .views-field-field-commerce {
     height: auto;
 }
 
-.page-editor th {
+body[class*=editor] th {
     font-size: 12px !important;
   text-align: center;
 }
-.page-editor .views-field-changed,
-.page-editor .views-field-title {
+body[class*=editor] .views-field-changed,
+body[class*=editor] .views-field-title {
     font-size: 12px;
 }
-.page-editor .views-field-title {
+body[class*=editor] .views-field-title {
     font-weight: bold;
+}
+body[class*=broken] h2,
+body[class*=broken] .region-preface-first,
+body[class*=broken] h4 ,
+body[class*=broken] th ,
+body[class*=broken] #region-preface-first,
+body[class*=editor] .region-preface-first,
+body[class*=editor] #region-preface-first,
+body[class*=editor] h2 ,
+body[class*=editor] h4 ,
+body[class*=editor] th {
+margin : 0px auto;
+padding :0px !important;
 }
 .page-broken {
 	direction: ltr !important;
+}
+
+/*
+*	view-recent-articles
+**/
+#block-views-recent-articles-block .block-title,
+#block-views-recent-articles-block .view-content{
+	padding-right: 21px;
+}
+#block-views-recent-articles-block .view-content{
+
+	border: 1px solid #346f97;
+	border-radius: 5px;
+padding-top: 20px;
+}
+.view-recent-articles > div {
+/*    height: 185px;*/
+}
+.view-recent-articles > div > div:nth-child(1n+9) {
+    display: none !important;
+}
+.view-recent-articles a{
+	display: inline-block;
+	text-decoration: none;
+	margin-bottom: 5px;
+}
+/*span.title,*/
+ span.year {
+    display: inline-block;
+}
+span.year:before {
+    content: "|";
+    padding: 0 5px;
+}
+
+.title_wrap *,
+.views-field.views-field-biblio-year .field-content, 
+.views-field.views-field-biblio-custom1 .field-content,
+span#sep{
+    color: #6AAAC1 !important;
+    font-size: 18px !important;
+    font-weight: 600;
+    text-shadow: 1px 0.5px 1px rgba(0, 0, 0, 0.3);
+     filter: progid:DXImageTransform.Microsoft.Shadow(color=#e2e2e2,direction=45);
+     display: inline;
+}
+.title_wrap {
+text-decoration: none;
+}
+.view-recent-articles .views-row {
+    margin-bottom: 10px;
+}
+.view-recent-articles .title_wrap span {
+  font-size: 16px !important;
+}
+.page-user .tabs li {
+width: 33% !important;
+display: inline-block;
+padding: 0px;
+margin: 0px;
+border: none;
 }

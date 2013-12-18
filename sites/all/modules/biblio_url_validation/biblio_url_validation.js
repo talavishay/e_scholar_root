@@ -18,8 +18,8 @@ if(typeof(Drupal.settings.broken_nid) !== "undefined"){
                             },  function(res){
                                 if(res === "saved"){
                                     
-                                    if(confirm("article Unbroken & Published successful\npress ok to be redircted to the editor page")){
-                                        window.location.replace("/editor");
+                                    if(confirm("article Unbroken & Published successful\npress ok to be redircted to the broken page")){
+                                        window.location.replace("/broken");
                                     }
                                 } else {
                                     window.alert("ERROR : published UNsuccessful\n you should try to publish and save manualy");
