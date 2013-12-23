@@ -167,22 +167,23 @@ function resave_all_bibio_node(){
     exit();
 }
 function biblio_url_validation_cron(){
+
     if(isset($GLOBALS["argv"])){
         @set_time_limit(600);
-        $result = db_query('SELECT b.biblio_url, b.nid  FROM {biblio} b LEFT JOIN {node} n ON b.nid = n.nid WHERE b.buv_queued = 0 AND b.buv_checked + :refresh < :time AND b.buv_broken IS NULL AND n.status = 1', array(
+        $result = db_query('SELECT b.biblio_url, b.nid  FROM {biblio} b INNER JOIN {node} n ON b.nid = n.nid INNER JOIN {field_data_field_libraries} f ON n.nid = f.entity_id WHERE b.buv_queued = 0 AND b.buv_checked + :refresh < :time AND b.buv_broken IS NULL AND n.status = 1 AND f.field_libraries_value <> 1', array(
             ':time' => time(),
             ':refresh' => variable_get("biblio_url_validation_time_period")
         ));
         $queue = DrupalQueue::get('biblio_url_validation_queue');
         $counter =array();
         foreach ($result as $biblio) {
-            if ($queue->createItem($biblio)) {
-                // Add timestamp to avoid queueing item more than once.
-                db_update('biblio')
-                  ->fields(array('buv_queued' => 1))
-                  ->condition('nid', $biblio->nid)
-                  ->execute();
-                }
+             if ($queue->createItem($biblio)) {
+                 // Add timestamp to avoid queueing item more than once.
+                 db_update('biblio')
+                   ->fields(array('buv_queued' => 1))
+                   ->condition('nid', $biblio->nid)
+                   ->execute();
+                 }
                 $counter[] = 'x';
         }
         drupal_set_message(count($counter )." articles queud for url validation");
@@ -201,49 +202,28 @@ function biblio_url_validation_commerce_cart_order_refresh($order_wrapper){
     $arg = arg();
 if( $arg[0] === "cart" || ($arg[0] === "checkout"  )){
         foreach ($order_wrapper->commerce_line_items as $delta => $line_item_wrapper) {
-            $line_item_val =  $line_item_wrapper->value();
+        	$test_validation = true;
+        	$line_item_val =  $line_item_wrapper->value();
             $id = $line_item_val->line_item_id;
             $node = node_load($line_item_val->field_nid["und"][0]["value"]);
+            if(isset($node->field_libraries) && isset($node->field_libraries["und"])){
+            	if($node->field_libraries["und"][0] !== "1" ){
+            		$test_validation = false;
+            	}
+            }
             $data = array("nid"=> $node->nid, "url" => $node->biblio_url, "changed" => $node->changed);  
-            if(!_biblio_url_validation_check_url($data)){
-                commerce_cart_order_product_line_item_delete($order_wrapper->value(), $id, FALSE);
-                drupal_set_message(t('Sorry, but e-scholar system found the article "'.$node->biblio_custom1.'" is no longer available & there for removed it from your cart'), "error");
-                $order = commerce_cart_order_load();
-                if($order === false){
-                    drupal_goto($_SERVER["HTTP_REFERER"]);
-                } elseif(count($order->commerce_line_items) == 0){
-                        drupal_goto($_SERVER["HTTP_REFERER"]);
-                }
-                
+            if($test_validation){
+	            if(!_biblio_url_validation_check_url($data)){
+	                commerce_cart_order_product_line_item_delete($order_wrapper->value(), $id, FALSE);
+	                drupal_set_message(t('Sorry, but e-scholar system found the article "'.$node->biblio_custom1.'" is no longer available & there for removed it from your cart'), "error");
+	                $order = commerce_cart_order_load();
+	                if($order === false){
+	                    drupal_goto($_SERVER["HTTP_REFERER"]);
+	                } elseif(count($order->commerce_line_items) == 0){
+	                        drupal_goto($_SERVER["HTTP_REFERER"]);
+	                }
+	            }
             }
         }
     }
 }
-//$biblio_url_validation_time_period = (int) variable_get("biblio_url_validation_time_period");
-//    if($data["changed"]< time()-$biblio_url_validation_time_period ){
-//        }
-//function biblio_url_validation_views_pre_render($view){
-//    if($view->name === "broken"){
-//        drupal_add_css('.view table div.contextual-links-wrapper { 
-//                            position:relative;
-//                        }
-//                        .view table div.contextual-links-wrapper .contextual-links{
-//                         
-//                        }
-//                        .views-field.views-field-biblio-url {
-//                            max-width: 50%;
-//                        }
-//                        .views-field.views-field-biblio-url a{
-//                            display: inline-block;
-//                            width: 500px;
-//                            word-wrap: break-word;
-//                            text-align: left;
-//                        }
-//                        .view-broken table {
-//                            max-width: 100%;
-//                        }
-//                        ',array("type" => "inline"));
-//    drupal_add_js('jQuery(document).ready(function(){jQuery(".contextual-links .nid.first a").prepend("סמן את מאמר מס\' ").append(" כתקין");})', "inline");
-//    }
-//    
-//}

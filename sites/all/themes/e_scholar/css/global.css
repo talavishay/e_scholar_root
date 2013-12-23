@@ -1157,33 +1157,47 @@ transform: scale(0.7);
     outline: none;
 }
 
+a.cart_export .content,
+a.buy_export .content{
+       background: url("/sites/all/themes/e_scholar/images/quote_btn_blue_start.png") no-repeat scroll 0 0 transparent;
+  padding-left: 65px !important;
+    padding-right: 3px !important;
+      min-width: 0 !important;
+}
 a.cart_export,
 a.buy_export{
-       background: url("/sites/all/themes/e_scholar/images/quote_btn_blue.png") no-repeat scroll 0 0 transparent;
+       background: url("/sites/all/themes/e_scholar/images/quote_btn_blue_end.png") no-repeat scroll  right top transparent;
+display: inline-block;
+max-height: 55px !important;
+padding-right: 19px;
+
 }
 a.get_url,
 a.free{
-       background: url("/sites/all/themes/e_scholar/images/url_btn_green.png") no-repeat scroll 0 3px  transparent;
+       background: url("/sites/all/themes/e_scholar/images/url_btn_green.png") no-repeat scroll 0 0px  transparent;
     
 }
-a.buy_url,
-a.cart_url{
-    background: url("/sites/all/themes/e_scholar/images/url_btn_orange.png") no-repeat scroll 0 0 transparent;
+a.buy_url , a.cart_url{
+background: url("/sites/all/themes/e_scholar/images/url_btn_orange_end.png") no-repeat scroll right top rgba(0, 0, 0, 0);
+display: inline-block;
+max-height: 55px !important;
+padding-right: 20px;
 }
-a.cart_export,
-a.buy_export,
-a.get_url,
-a.free,
-a.buy_url,
-a.cart_url{
-     color: white; 
-     display: block;
+a.buy_url .content, a.cart_url .content{
+    background: url("/sites/all/themes/e_scholar/images/url_btn_orange_left.png") no-repeat scroll 0 0 transparent;
+ padding-left: 68px !important;
+  min-width: 0 !important;
+}
+a.cart_export .content, a.buy_export .content, a.get_url, a.free, a.buy_url .content, a.cart_url .content{
+  color: #FFF;
     display: inline-block;
-    letter-spacing: 0.5px;
-    padding: 31px 5px 16px 53px;
+    line-height: 25px;
+    max-height: 12px !important;
+    min-width: 134px;
+    overflow: hidden;
+    padding: 27px 5px 16px 53px;
     text-align: center;
     text-decoration: none;
-    width: 134px;
 }
 a.free{
     padding-top: 28px;
@@ -1216,26 +1230,30 @@ a.free{
 }
 .view-commerce-cart-form .buy_export, 
 .view-commerce-cart-form .cart_export {
-    background-size: contain !important;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
-    height: 19px;
-    margin: 0 !important;
-    padding: 21px 0 0 25px;
-    text-align: center;
-    width: 109px;
+      float: left;
 }
 .views-field-nothing .buy_export span{
-
+ margin-right: 7px;
+}
+.views-field-field-commerce .content{
+color: #fff;
 }
 .views-field-field-commerce .field-content{
     display: inherit;
     width: auto;
 }
+
+.view-commerce-cart-form table {
+    width: 99%;
+     text-align: center;
+}
 .view-search-api-solr .views-field-field-commerce a{
-      display: inline-block;
+/*      display: inline-block;
     float: right;
-    margin: 0 30px;
+  */
+  margin: 0 30px;
     position: relative;
     font-weight: bold;
     letter-spacing: 1px;
@@ -1248,7 +1266,8 @@ a.free{
 }
 .views-field-field-commerce span.price {
     color: inherit;
-    margin: 0 2px;
+    margin: 0 8px 0 0 !important;
+      vertical-align: middle;
 }
 .view-flag-bookmarks  .views-field-field-commerce {
     width: 150px;
@@ -1302,15 +1321,11 @@ body.page-user table.views-table .views-field-field-commerce {
   width: 170px;
 }
 
-/*   ##  tipsy */
 .tipsy {
-    font-size: 10px;
     padding: 5px;
-    position: absolute;
-    z-index: 100000;
     font-size: 1.1em;
 }
-
+.ajax-progress,
 .tipsy-inner {
     max-width: 650px;
     padding: 20px;
@@ -1318,13 +1333,19 @@ body.page-user table.views-table .views-field-field-commerce {
     border-radius: 10px 10px 10px 10px;
     box-shadow: 0px 3px 10px 0px #444;
     color: black;
-    position: relative;
-    left: -100px;
     
 }
 .tipsy-arrow {
     background: url("/sites/all/themes/e_scholar/images/tipsy.gif") no-repeat scroll left top transparent;
 }
+.ajax-progress{
+	 left: 47%;
+    position: fixed;
+    top: 50%;
+    width: auto;
+    z-index: 99;
+}
+/*
 .ajax-progress .throbber {
     float: none;
     height: 15px;
@@ -1332,7 +1353,12 @@ body.page-user table.views-table .views-field-field-commerce {
     width: 15px;
     position: absolute;
 }
+*/
 
+.ajax-progress .message {
+    padding-left: 0;
+    padding-right: 20px;
+}
 .page-cart .mlt_action.close_mlt > span{
     position: static;
 }
@@ -1433,4 +1459,12 @@ display: inline-block;
 padding: 0px;
 margin: 0px;
 border: none;
+}
+/*
+* view-flags 
+*/
+.view-flags .views-field-field-libraries img {
+ height: auto;
+    margin: 5px 0;
+    width: 35px;
 }
