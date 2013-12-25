@@ -1,4 +1,7 @@
-
+.ie .title_wrap *{
+filter:none !important;
+transform : none !important;
+}
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
 ul {
@@ -272,8 +275,8 @@ font-size: 16px;
     background-image:      -o-linear-gradient(top, #E2E2E2 2px, #E2E2E2 20px, #fff 12em); /* For old Opera (11.1 to 12.0) */
     background-image:         linear-gradient(to bottom, #E2E2E2 2px, #E2E2E2 20px, #fff 12em); /* Standard syntax; must be last */
     background: linear-gradient(#E2E2E2  0px, #E2E2E2 2px, #E2E2E2 20px, white 12em) repeat scroll 0 0 transparent;
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#e2e2e2,endColorstr=#ffffff);
-    -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#e2e2e2,endColorstr=#ffffff)";
+/*    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#e2e2e2,endColorstr=#ffffff);
+    -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#e2e2e2,endColorstr=#ffffff)";*/
     box-shadow: 1px 1px 2px #E2E2E2 ;
     border: none !important;
     text-align: center;
@@ -815,8 +818,8 @@ body.page-user table.views-table tbody tr {
     background-image:      -o-linear-gradient(top, #e8e8e8 , #fff 98% ); /* For old Opera (11.1 to 12.0) */
     background-image:         linear-gradient(to bottom, #e8e8e8 98% ); /* Standard syntax; must be last */
     background: linear-gradient(#e8e8e8 , white 98%) repeat scroll 0 0 transparent;
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#e8e8e8,endColorstr=#ffffff);
-    -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#e8e8e8,endColorstr=#ffffff)";
+/*    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#e8e8e8,endColorstr=#ffffff);
+    -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#e8e8e8,endColorstr=#ffffff)";*/
 
     
 }
@@ -1200,7 +1203,7 @@ a.cart_export .content, a.buy_export .content, a.get_url, a.free, a.buy_url .con
     text-decoration: none;
 }
 a.free{
-    padding-top: 28px;
+line-height: 20px;
 }
 .get_export{
     display: none !important;
@@ -1356,8 +1359,10 @@ body.page-user table.views-table .views-field-field-commerce {
 */
 
 .ajax-progress .message {
-    padding-left: 0;
-    padding-right: 20px;
+font-size: 18px;
+font-weight: bold;
+padding-left: 0;
+padding-right: 20px; 
 }
 .page-cart .mlt_action.close_mlt > span{
     position: static;
@@ -1441,7 +1446,7 @@ span#sep{
     font-size: 18px !important;
     font-weight: 600;
     text-shadow: 1px 0.5px 1px rgba(0, 0, 0, 0.3);
-     filter: progid:DXImageTransform.Microsoft.Shadow(color=#e2e2e2,direction=45);
+/*     filter: progid:DXImageTransform.Microsoft.Shadow(color=#e2e2e2,direction=45);*/
      display: inline;
 }
 .title_wrap {
