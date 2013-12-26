@@ -12,15 +12,10 @@
 function commerce_paypal_wps_commerce_payment_method_info() {
   $payment_methods = array();
 
-  $icons = commerce_paypal_icons();
-  $display_title = t('!logo PayPal - pay securely without sharing your financial information', array('!logo' => $icons['paypal']));
-  $display_title .= '<div class="commerce-paypal-icons"><span class="label">' . t('Includes:') . '</span>' . implode(' ', $icons) . '</div>';
-
   $payment_methods['paypal_wps'] = array(
     'base' => 'commerce_paypal_wps',
     'title' => t('PayPal WPS'),
     'short_title' => t('PayPal'),
-    'display_title' => $display_title,
     'description' => t('PayPal Website Payments Standard'),
     'terminal' => FALSE,
     'offsite' => TRUE,
@@ -34,18 +29,19 @@ function commerce_paypal_wps_commerce_payment_method_info() {
  * Returns the default settings for the PayPal WPS payment method.
  */
 function commerce_paypal_wps_default_settings() {
-  $default_currency = variable_get('commerce_default_currency', 'USD');
+  $default_currency = commerce_default_currency();
 
   return array(
     'business' => '',
-    'currency_code' => in_array($default_currency, array_keys(commerce_paypal_wps_currencies())) ? $default_currency : 'USD',
+    'currency_code' => in_array($default_currency, array_keys(commerce_paypal_currencies('paypal_wps'))) ? $default_currency : 'USD',
     'allow_supported_currencies' => FALSE,
     'language' => 'US',
     'server' => 'sandbox',
     'payment_action' => 'sale',
     'ipn_logging' => 'notification',
-    'show_payment_instructions' => FALSE,
+    'receiver_emails' => '',
     'ipn_create_billing_profile' => FALSE,
+    'show_payment_instructions' => FALSE,
   );
 }
 
@@ -69,7 +65,7 @@ function commerce_paypal_wps_settings_form($settings = array()) {
     '#type' => 'select',
     '#title' => t('Default currency'),
     '#description' => t('Transactions in other currencies will be converted to this currency, so multi-currency sites must be configured to use appropriate conversion rates.'),
-    '#options' => commerce_paypal_wps_currencies(),
+    '#options' => commerce_paypal_currencies('paypal_wps'),
     '#default_value' => $settings['currency_code'],
   );
   $form['allow_supported_currencies'] = array(
@@ -111,10 +107,11 @@ function commerce_paypal_wps_settings_form($settings = array()) {
     ),
     '#default_value' => $settings['ipn_logging'],
   );
-  $form['show_payment_instructions'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show a message on the checkout form when PayPal WPS is selected telling the customer to "Continue with checkout to complete payment via PayPal."'),
-    '#default_value' => $settings['show_payment_instructions'],
+  $form['receiver_emails'] = array(
+    '#type' => 'textfield',
+    '#title' => t('PayPal receiver e-mail addresses'),
+    '#description' => t('Enter the primary e-mail address for your PayPal account if different from the one entered above or a comma separated list of all valid e-mail addresses on the account.') . '<br />' . t('IPNs that originate from payments made to a PayPal account whose e-mail address is not in this list will not be processed.'),
+    '#default_value' => $settings['receiver_emails'],
   );
   $form['ipn_create_billing_profile'] = array(
     '#type' => 'checkbox',
@@ -122,13 +119,18 @@ function commerce_paypal_wps_settings_form($settings = array()) {
     '#description' => t('This is most useful for sites that do not collect billing information locally but still want to have customer names on orders.'),
     '#default_value' => $settings['ipn_create_billing_profile'],
   );
+  $form['show_payment_instructions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show a message on the checkout form when PayPal WPS is selected telling the customer to "Continue with checkout to complete payment via PayPal."'),
+    '#default_value' => $settings['show_payment_instructions'],
+  );
 
   return $form;
 }
 
 /**
- * Payment method callback: adds a message and CSS to the submission form if
- * enabled in the payment method settings.
+ * Payment method callback: adds a message to the submission form if enabled in
+ * the payment method settings.
  */
 function commerce_paypal_wps_submit_form($payment_method, $pane_values, $checkout_pane, $order) {
   $form = array();
@@ -149,12 +151,19 @@ function commerce_paypal_wps_form_commerce_checkout_form_alter(&$form, &$form_st
   // If this checkout form contains the payment method radios...
   if (!empty($form['commerce_payment']['payment_method']['#options'])) {
     // Loop over its options array looking for a PayPal WPS option.
-    foreach (array_keys($form['commerce_payment']['payment_method']['#options']) as $key) {
+    foreach ($form['commerce_payment']['payment_method']['#options'] as $key => &$value) {
       list($method_id, $rule_name) = explode('|', $key);
 
-      // If we find PayPal WPS, include its CSS on the form and exit the loop.
+      // If we find PayPal WPS...
       if ($method_id == 'paypal_wps') {
+        // Prepare the replacement radio button text with icons.
+        $icons = commerce_paypal_icons();
+        $value = t('!logo PayPal - pay securely without sharing your financial information', array('!logo' => $icons['paypal']));
+        $value .= '<div class="commerce-paypal-icons"><span class="label">' . t('Includes:') . '</span>' . implode(' ', $icons) . '</div>';
+
+        // Add the CSS.
         $form['commerce_payment']['payment_method']['#attached']['css'][] = drupal_get_path('module', 'commerce_paypal_wps') . '/theme/commerce_paypal_wps.theme.css';
+
         break;
       }
     }
@@ -207,9 +216,24 @@ function commerce_paypal_wps_redirect_form_validate($order, $payment_method) {
  *   price, and other parameters as possible.
  */
 function commerce_paypal_wps_paypal_ipn_validate($order, $payment_method, $ipn) {
-  // Return FALSE if the receiver e-mail does not match the one specified by
-  // the payment method instance.
-  if (trim(strtolower($ipn['receiver_email'])) != trim(strtolower($payment_method['settings']['business']))) {
+  // Prepare a trimmed list of receiver e-mail addresses.
+  if (!empty($payment_method['settings']['receiver_emails'])) {
+    $receiver_emails = explode(',', $payment_method['settings']['receiver_emails']);
+  }
+  else {
+    $receiver_emails = array();
+  }
+
+  // Add the business e-mail address to the list of addresses.
+  $receiver_emails[] = $payment_method['settings']['business'];
+
+  foreach ($receiver_emails as $key => &$email) {
+    $email = trim(strtolower($email));
+  }
+
+  // Return FALSE if the receiver e-mail does not match one specified by the
+  // payment method instance.
+  if (!in_array(trim(strtolower($ipn['receiver_email'])), $receiver_emails)) {
     commerce_payment_redirect_pane_previous_page($order);
     watchdog('commerce_paypal_wps', 'IPN rejected: invalid receiver e-mail specified (@receiver_email); must match the primary e-mail address on the PayPal account.', array('@receiver_email' => $ipn['receiver_email']), WATCHDOG_NOTICE);
     return FALSE;
@@ -265,7 +289,7 @@ function commerce_paypal_wps_paypal_ipn_process($order, $payment_method, &$ipn) 
   $transaction->remote_id = $ipn['txn_id'];
   $transaction->amount = commerce_currency_decimal_to_amount($ipn['mc_gross'], $ipn['mc_currency']);
   $transaction->currency_code = $ipn['mc_currency'];
-  $transaction->payload[REQUEST_TIME] = $ipn;
+  $transaction->payload[REQUEST_TIME . '-ipn'] = $ipn;
 
   // Set the transaction's statuses based on the IPN's payment_status.
   $transaction->remote_status = $ipn['payment_status'];
@@ -357,8 +381,8 @@ function commerce_paypal_wps_paypal_ipn_process($order, $payment_method, &$ipn) 
  *   - language: the PayPal language code to use on the payment form
  *   - payment_action: the PayPal payment action to use: sale, authorization,
  *     or order
- *   - payment_method: optionally the name of the Commerce payment method to
- *     include in the IPN notify_url
+ *   - payment_method: optionally a payment method instance ID to include in the
+ *     IPN notify_url
  *
  * @return
  *   A renderable form array.
@@ -372,7 +396,7 @@ function commerce_paypal_wps_order_form($form, &$form_state, $order, $settings) 
   $currency_code = $settings['currency_code'];
   $order_currency_code = $wrapper->commerce_order_total->currency_code->value();
 
-  if (!empty($settings['allow_supported_currencies']) && in_array($order_currency_code, array_keys(commerce_paypal_wps_currencies()))) {
+  if (!empty($settings['allow_supported_currencies']) && in_array($order_currency_code, array_keys(commerce_paypal_currencies('paypal_wps')))) {
     $currency_code = $order_currency_code;
   }
 
@@ -424,7 +448,7 @@ function commerce_paypal_wps_order_form($form, &$form_state, $order, $settings) 
     'invoice' => commerce_paypal_ipn_invoice($order),
 
     // Define a single item in the cart representing the whole order
-    'amount_1' => commerce_currency_amount_to_decimal(commerce_currency_convert($amount, $order_currency_code, $currency_code), $currency_code),
+    'amount_1' => commerce_paypal_price_amount(commerce_currency_convert($amount, $order_currency_code, $currency_code), $currency_code),
     'item_name_1' => t('Order @order_number at @store', array('@order_number' => $order->order_number, '@store' => variable_get('site_name', url('<front>', array('absolute' => TRUE))))),
     'on0_1' => t('Product count'),
     'os0_1' => commerce_line_items_quantity($wrapper->commerce_line_items, commerce_product_line_item_types()),
@@ -507,11 +531,4 @@ function commerce_paypal_wps_languages() {
       'zh_TW' => t('Traditional Chinese (for Taiwan only)'),
     ),
   );
-}
-
-/**
- * Returns an array of all possible currency codes.
- */
-function commerce_paypal_wps_currencies() {
-  return drupal_map_assoc(array('AUD', 'BRL', 'CAD', 'CHF', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'JPY', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'SEK', 'SGD', 'THB', 'TRY', 'TWD', 'USD'));
 }

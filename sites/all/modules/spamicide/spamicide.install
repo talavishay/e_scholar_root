@@ -20,7 +20,7 @@ function spamicide_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'runtime' || $phase == 'install') {
-    $path = file_default_scheme() . '://' . variable_get('spamicide_dir', 'spamicide');
+    $path = 'public://' . variable_get('spamicide_dir', 'spamicide'); //was file_default_scheme()
     if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
       if (!is_dir($path)) {
         $requirements['spamicide_directory'] = array(

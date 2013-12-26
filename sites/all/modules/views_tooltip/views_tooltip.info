@@ -8,9 +8,9 @@ core = 7.x
 ; Views handlers
 files[] = handlers/views_tooltip_handler_field_tooltip.inc
 
-; Information added by drupal.org packaging script on 2012-10-30
+; Information added by drupal.org packaging script on 2013-10-19
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "views_tooltip"
-datestamp = "1351561421"
+datestamp = "1382165236"
 

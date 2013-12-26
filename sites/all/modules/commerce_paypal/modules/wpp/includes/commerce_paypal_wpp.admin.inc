@@ -33,7 +33,7 @@ function commerce_paypal_wpp_capture_form($form, &$form_state, $order, $transact
   }
 
   // Convert the price amount to a user friendly decimal value.
-  $default_amount = commerce_currency_amount_to_decimal($default_amount, $transaction->currency_code);
+  $default_amount = number_format(commerce_currency_amount_to_decimal($default_amount, $transaction->currency_code), 2, '.', '');
 
   $description = implode('<br />', array(
     t('Authorization: @amount', array('@amount' => commerce_currency_format($transaction->amount, $transaction->currency_code))),
@@ -75,7 +75,7 @@ function commerce_paypal_wpp_capture_form_validate($form, &$form_state) {
 
   // Ensure the amount is within the allowed limit for PayPal authorizations.
   $authorization_amount = commerce_currency_amount_to_decimal($transaction->amount, $transaction->currency_code);
-  $authorization_amount_upper = commerce_currency_amount_to_decimal($transaction->amount + 75, $transaction->currency_code);
+  $authorization_amount_upper = commerce_currency_amount_to_decimal($transaction->amount, $transaction->currency_code) + 75;
 
   if ($amount > $authorization_amount * 1.15 || $amount > $authorization_amount_upper) {
     form_set_error('amount', t('You cannot capture an amount $75 or 115% greater than the authorization amount in PayPal WPP.'));
@@ -83,7 +83,7 @@ function commerce_paypal_wpp_capture_form_validate($form, &$form_state) {
 
   // If the authorization has expired, display an error message and redirect.
   if (REQUEST_TIME - $transaction->created > 86400 * 29) {
-    drupal_set_message(t('This authorization has passed its 29 day limit cannot be captured.'), 'error');
+    drupal_set_message(t('This authorization has passed its 29 day limit and cannot be captured.'), 'error');
     drupal_goto('admin/commerce/orders/' . $form_state['order']->order_id . '/payment');
   }
 }
@@ -106,12 +106,12 @@ function commerce_paypal_wpp_capture_form_submit($form, &$form_state) {
     $nvp = array(
       'METHOD' => 'DoReauthorization',
       'AUTHORIZATIONID' => $transaction->remote_id,
-      'AMT' => commerce_currency_amount_to_decimal($transaction->amount, $transaction->currency_code),
+      'AMT' => commerce_paypal_price_amount($transaction->amount, $transaction->currency_code),
       'CURRENCYCODE' => $transaction->currency_code,
     );
 
     // Submit the reauthorization request.
-    $response = commerce_paypal_wpp_request($payment_method, $nvp, $order);
+    $response = commerce_paypal_api_request($payment_method, $nvp, $order);
     $transaction->payload[REQUEST_TIMESTAMP . '-reauthorization'] = $response;
 
     // If the response contains an authorization ID...
@@ -146,7 +146,7 @@ function commerce_paypal_wpp_capture_form_submit($form, &$form_state) {
     );
 
     // Submit the capture request request to PayPal.
-    $response = commerce_paypal_wpp_request($payment_method, $nvp, $order);
+    $response = commerce_paypal_api_request($payment_method, $nvp, $order);
     $transaction->payload[REQUEST_TIME . '-capture'] = $response;
 
     switch ($response['ACK']) {
@@ -182,7 +182,7 @@ function commerce_paypal_wpp_capture_form_submit($form, &$form_state) {
         // Display an error message but leave the transaction pending.
         drupal_set_message(t('Prior authorization capture failed, so the transaction will remain in a pending status.'), 'error');
         drupal_set_message(check_plain($response['L_LONGMESSAGE0']), 'error');
-        $transaction->payload[REQUEST_TIME . '-capture'] = $response;
+        break;
     }
   }
 

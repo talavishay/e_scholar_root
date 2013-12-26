@@ -1240,10 +1240,10 @@ line-height: 20px;
 .views-field-nothing .buy_export span{
  margin-right: 7px;
 }
-.views-field-field-commerce .content{
+.views-field-field-commerce-sku .content{
 color: #fff;
 }
-.views-field-field-commerce .field-content{
+.views-field-field-commerce-sku .field-content{
     display: inherit;
     width: auto;
 }
@@ -1252,7 +1252,7 @@ color: #fff;
     width: 99%;
      text-align: center;
 }
-.view-search-api-solr .views-field-field-commerce a{
+.view-search-api-solr .views-field-field-commerce-sku a{
 /*      display: inline-block;
     float: right;
   */
@@ -1267,7 +1267,7 @@ color: #fff;
   max-height: 200px !important;
   overflow-y: scroll;
 }
-.views-field-field-commerce span.price {
+.views-field-field-commerce-sku span.price {
     color: inherit;
     margin: 0 8px 0 0 !important;
       vertical-align: middle;

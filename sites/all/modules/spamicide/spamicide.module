@@ -20,7 +20,7 @@
  * Implements hook_menu().
  */
 function spamicide_menu() {
-  $items['admin/config/spamicide'] = array(
+  $items['admin/config/people/spamicide'] = array(
     'title' => 'Spamicide',
     'description' => 'Administer how and where Spamicide is used.',
     'page callback' => 'drupal_get_form',
@@ -28,7 +28,7 @@ function spamicide_menu() {
     'access arguments' => array('administer spamicide'),
     //'access callback' => TRUE,
   );
-  $items['admin/config/peoplespamicide/form'] = array(
+  $items['admin/config/people/spamicide/form'] = array(
     'title' => 'Forms',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
@@ -36,7 +36,7 @@ function spamicide_menu() {
   );
 
   // form for adding spamicide form protection
-  $items['admin/config/peoplespamicide/spamicide_form/add/%'] = array(
+  $items['admin/config/people/spamicide/spamicide_form/add/%'] = array(
     'title' => 'Set Spamicide form',
     'description' => "Add or edit form_id's to protect with Spamicide.",
     'page callback' => 'drupal_get_form',
@@ -45,7 +45,7 @@ function spamicide_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  $items['admin/config/spamicide/spamicide_form/delete/%'] = array(
+  $items['admin/config/people/spamicide/spamicide_form/delete/%'] = array(
     'title' => 'Delete',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('spamicide_delete_confirm', 5, TRUE),
@@ -61,7 +61,7 @@ function spamicide_menu() {
  */
 function spamicide_help($path, $arg) {
   switch ($path) {
-    case 'admin/config/spamicide':
+    case 'admin/config/people/spamicide':
       return t('The spamicide module provides the ability to prevent spam being submitted to your site on various drupal forms');
 
     case 'admin/help#spamicide':
@@ -158,7 +158,7 @@ function spamicide_admin_form() {
     if ($spamicide->removable) {
       $form['spamicide_forms']['spamicide_form'][$spamicide->form_id]['operations'] = array(
         '#markup' => implode(", ", array(
-          l(t('delete'), "admin/config/spamicide/spamicide_form/delete/{$spamicide->form_id}"),
+          l(t('delete'), "admin/config/people/spamicide/spamicide_form/delete/{$spamicide->form_id}"),
         ))
       );
     }
@@ -217,7 +217,7 @@ function spamicide_admin_form_validate($form, &$form_state) {
   if (preg_match_all('[\W]', $form_state['values']['spamicide_dir'], $str)) {
     form_set_error('spamicide_dir', t("Only AlphaNumeric characters or the underscore please"));
   }else if ($form_state['values']['spamicide_dir'] != variable_get('spamicide_dir')) {
-    $path = file_default_scheme() . '://' . $form_state['values']['spamicide_dir'];
+    $path = 'public://' . $form_state['values']['spamicide_dir'];
     if (is_dir($path)) {
       form_set_error('spamicide_dir', t("Unable to create new directory, it already exists, please choose another name"));
     }
@@ -240,7 +240,7 @@ function spamicide_admin_form_submit($form, &$form_state) {
     variable_set('spamicide_administration_mode', $form_state['values']['spamicide_administration_mode']);
     variable_set('spamicide_log_attempts', $form_state['values']['spamicide_log_attempts']);
     if ($form_state['values']['spamicide_dir'] != variable_get('spamicide_dir')) {
-      file_unmanaged_delete_recursive(file_default_scheme() . '://' . variable_get('spamicide_dir'));
+      file_unmanaged_delete_recursive('public://' . variable_get('spamicide_dir'));
       variable_set('spamicide_dir', $form_state['values']['spamicide_dir']);
     }
     if ($form_state['values']['spamicide_description'] != variable_get('spamicide_description')) {
@@ -317,7 +317,7 @@ function spamicide_admin_adform_form_submit($form, &$form_state) {
   _spamicide_set_css_file($form_state['values']['spamicide_form_field'], 'create');
   drupal_set_message(t('Saved Spamicide settings.'), 'status');
   // redirect to general Spamicide settings page after submission
-  drupal_goto('admin/config/spamicide');
+  drupal_goto('admin/config/people/spamicide');
 }
 
 /**
@@ -338,7 +338,7 @@ function spamicide_delete_confirm($form, &$form_state, $spamicide_form_id, $dele
   );
     $message = t('Are you sure you want to remove Spamicide protection for form_id %form_id?', array('%form_id' => $spamicide_form_id));
     $yes = t('Delete');
-  return confirm_form($form, $message, isset($_GET['destination']) ? check_plain($_GET['destination']) : 'admin/config/spamicide/spamicide_form', '', $yes);
+  return confirm_form($form, $message, isset($_GET['destination']) ? check_plain($_GET['destination']) : 'admin/config/people/spamicide/spamicide_form', '', $yes);
 }
 
 /**
@@ -351,7 +351,7 @@ function spamicide_delete_confirm_submit($form, &$form_state) {
   _spamicide_set_css_file($spamicide_form_field, 'delete');
   drupal_set_message(t('Spamicide protection for form %form_id has been removed.', array('%form_id' => $spamicide_form_id)));
   // redirect to general Spamicide settings page after deletion
-  drupal_goto('admin/config/spamicide');
+  drupal_goto('admin/config/people/spamicide');
 }
 
 /**
@@ -367,7 +367,7 @@ function spamicide_form_alter(&$form, &$form_state, $form_id) {
   module_load_include('inc', 'spamicide');
     $spamicide_field = _spamicide_get_field($form_id);
     if ($spamicide_field) {
-      drupal_add_css(file_default_scheme() . '://' . variable_get('spamicide_dir', 'spamicide') . '/' . $spamicide_field . '.css');
+      drupal_add_css('public://' . variable_get('spamicide_dir', 'spamicide') . '/' . $spamicide_field . '.css');
         $spamicide_description = _spamicide_get_description();
         $spamicide_destination = drupal_get_destination();
         $form[$spamicide_field] = array(
@@ -395,7 +395,7 @@ function spamicide_form_alter(&$form, &$form_state, $form_id) {
         '#collapsed' => TRUE,
       );
       $form['spamicide']['add_spamicide'] = array(
-        '#markup' => l(t('Add Spamicide protection to this form.'), "admin/config/spamicide/spamicide_form/add/$form_id"),
+        '#markup' => l(t('Add Spamicide protection to this form.'), "admin/config/people/spamicide/spamicide_form/add/$form_id"),
       );
     }
     else {

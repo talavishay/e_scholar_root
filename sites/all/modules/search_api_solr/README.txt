@@ -93,6 +93,19 @@ different sets of fields in different searches on an index, it is adviced that
 you collect all fields that should be searchable into a single field using the
 “Aggregated fields” data alteration.
 
+Clean field identifiers:
+  If your Solr server was created in a module version prior to 1.2, you will get
+  the option to switch the server to "Clean field identifiers" (which is default
+  for all new servers). This will change the Solr field names used for all
+  fields whose Search API identifiers contain a colon (i.e., all nested fields)
+  to support some advanced functionality, like sorting by distance, for which
+  Solr is buggy when using field names with colons.
+  The only downside of this change is that the data in Solr for these fields
+  will become invalid, so all indexes on the server which contain such fields
+  will be scheduled for re-indexing. (If you don't want to search on incomplete
+  data until the re-indexing is finished, you can additionally manually clear
+  the indexes, on their Status tabs, to prevent this.)
+
 Hidden variables
 ----------------
 
@@ -100,6 +113,23 @@ Hidden variables
   By default, keywords that occur in more than 90% of results are ignored for
   autocomplete suggestions. This setting lets you modify that behaviour by
   providing your own ratio. Use 1 or greater to use all suggestions.
+- search_api_solr_index_prefix (default: '')
+  By default, the index ID in the Solr server is the same as the index's machine
+  name in Drupal. This setting will let you specify a prefix for the index IDs
+  on this Drupal installation. Only use alphanumeric characters and underscores.
+  Since changing the prefix makes the currently indexed data inaccessible, you
+  should change this vairable only when no indexes are currently on any Solr
+  servers.
+- search_api_solr_index_prefix_INDEX_ID (default: '')
+  Same as above, but a per-index prefix. Use the index's machine name as
+  INDEX_ID in the variable name. Per-index prefixing is done before the global
+  prefix is added, so the global prefix will come first in the final name:
+  (GLOBAL_PREFIX)(INDEX_PREFIX)(INDEX_ID)
+  The same rules as above apply for setting the prefix.
+- search_api_solr_http_get_max_length (default: 4000)
+  The maximum number of bytes that can be handled as an HTTP GET query when
+  HTTP method is AUTO. Typically Solr can handle up to 65355 bytes, but Tomcat
+  and Jetty will error at slightly less than 4096 bytes.
 
 Customizing your Solr server
 ----------------------------
