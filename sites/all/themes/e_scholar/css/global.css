@@ -1144,6 +1144,10 @@ transform: scale(0.7);
 .view-flag-bookmarks  .views-field.views-field-ops {
   width: 10px !important;
 }
+.view-id-flag_bookmarks,
+#block-views-flag-bookmarks-block-2 .view-flag-bookmarks table{
+width: 100%;
+}
 .delete-line-item.form-submit.loading {
     background-repeat:   no-repeat ;
     
@@ -1223,8 +1227,6 @@ line-height: 20px;
 .view-flag-bookmarks a.buy_url,
  .view-flag-bookmarks a.cart_url
 .view-flag-bookmarks a.cart_export,
- */
-
 .view-flag-bookmarks a.get_url,
 .view-flag-bookmarks a.free{
       background-size: contain;
@@ -1232,6 +1234,7 @@ line-height: 20px;
     font-weight: bold;
     padding: 22px 2px 11px 33px;
     width: 123px;
+*/
 }
 .view-commerce-cart-form .buy_export, 
 .view-commerce-cart-form .cart_export {
