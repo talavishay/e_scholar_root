@@ -1441,6 +1441,22 @@ padding-top: 20px;
 	text-decoration: none;
 	margin-bottom: 5px;
 }
+/*  limor */
+.front #region-content #block-views-recent-articles-block{
+width: 200px;
+}
+.front  #block-views-recent-articles-block h2 {
+  font-size: 15px;
+  padding-right: 0 !important;
+}
+#block-views-recent-articles-block .view-content {
+    padding: 20px 20px 0px 20px ;
+}
+.view-recent-articles *{
+	color:blue;
+	font-size:12px;
+}
+/*  limor */
 /*span.title,*/
  span.year {
     display: inline-block;
