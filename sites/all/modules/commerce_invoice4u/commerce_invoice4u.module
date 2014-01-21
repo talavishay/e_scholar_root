@@ -1,0 +1,68 @@
+<?php
+//function commerce_invoice4u(){}
+
+
+function commerce_invoice4u_commerce_order_presave($order){
+	if($order->status == "completed" && $order->uid != "0") {
+		require_once('invoice4u.php');		
+		$invoice = new Invoice4u();
+		$invoice->Login();
+		$invoice->CreateDocument($order);
+		$res = $invoice->result;
+	}
+}
+function commerce_invoice4u_admin() {
+	$form = array();
+	$form['account'] = array(
+			'#type' => 'fieldset',
+			'#title' => "פרטי חשבון",
+			'#weight' => 0,
+// 			'#collapsible' => TRUE,
+// 			'#collapsed' => FALSE,
+	);
+	$form['account']['commerce_invoice4u_user'] = array(
+			'#type' => 'textfield',
+			'#title' => 'שם משתמש',
+			'#default_value' => variable_get('commerce_invoice4u_user'),
+			'#required' => TRUE,
+	);
+	$form['account']['commerce_invoice4u_password'] = array(
+			'#type' => 'textfield',
+			'#title' => 'סיסמא',
+			'#default_value' => variable_get('commerce_invoice4u_password'),
+			'#required' => TRUE,
+	);
+//	$form['#attached']['css'] = array(
+	//		drupal_get_path('module', 'commerce_invoice4u') . '/css/form.css',
+	//);
+	$form['#submit'] = array('commerce_invoice4u_admin_submit');
+	return system_settings_form($form);
+}
+function commerce_invoice4u_admin_validate($form, &$form_state) {
+	
+	if ($form_state['values']['commerce_invoice4u_user'] === "") {
+		form_set_error('commerce_invoice4u_user', 'הסבר לסמל המאגר');
+	}
+	if ($form_state['values']['commerce_invoice4u_password'] === "") {
+		form_set_error('commerce_invoice4u_password', 'קישור לסמל המאגר');
+	}
+
+}
+		 
+function commerce_invoice4u_admin_submit($form, &$form_state) {
+	variable_set('commerce_invoice4u_user', $form_state['values']['commerce_invoice4u_user']);
+	variable_set('commerce_invoice4u_password', $form_state['values']['commerce_invoice4u_password']);
+	
+}
+function commerce_invoice4u_menu(){
+  $items['admin/scholare-settings/invoice4u'] = array(
+    		'title' => 'invoice4u',
+    		'description' => 'הגדרות חשבון להפקת חשבוניות בINVOICE4U',
+    		'page callback' => 'drupal_get_form',
+    		'page arguments' => array('commerce_invoice4u_admin'),
+    		'access arguments' => array('access administration pages'),
+    		'type' => MENU_NORMAL_ITEM,
+    );
+    
+    return $items;
+}
