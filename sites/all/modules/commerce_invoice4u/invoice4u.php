@@ -117,11 +117,18 @@ class Invoice4u
     //$doc->TotalTaxAmount = $ammout * ($doc->TaxPercentage/100) ;     
     //$doc->Total = $ammout + $doc->TotalTaxAmount ;
     $doc->TotalWithoutTax = $ammout;
-    
+    // if order paid throw PAYPAL take the name from paypal ipn REQ 
+    if($_REQUEST["q"] == "commerce_paypal/ipn/paypal_wps|commerce_payment_paypal_wps"){
+    	$doc->GeneralCustomer->Name = $_REQUEST["first_name"]." ".$_REQUEST["last_name"];
+    	
+    } else {
+    	$doc->GeneralCustomer->Name = $order->mail;
+    	
+    }
     
     $doc->Payments[0]->Amount = $ammout;
-    $doc->GeneralCustomer->Name = $order->mail;
-    $doc->GeneralCustomer->Identifier = $order->uid;
+    
+    
     $doc->Subject = t("הזמנה מספר @orderid באתר @site_name", array("@orderid" => $order->order_number, "@site_name" => variable_get('site_name')));
     
     
