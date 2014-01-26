@@ -83,8 +83,8 @@ function biblio_style_apa($node) {
       $output .= l($node->title, $url['link'], $url['options']);
       $output .= ". </span> \n";
       $output .= !empty($editors) ? '(' . theme('biblio_format_authors', array('contributors' => $editors, 'options' => $author_options)) . ', Ed.).' : "";
-      $output .= ($node->biblio_secondary_title) ? '<u>' . check_plain($node->biblio_secondary_title) . '. ' : '<u>';
-      $output .= ($node->biblio_volume) ? check_plain($node->biblio_volume) . ($node->biblio_issue ? '</u>(' . check_plain($node->biblio_issue) . '),&nbsp;' : ',</u> ') : '</u> ';
+      $output .= ($node->biblio_secondary_title) ? '<i>' . check_plain($node->biblio_secondary_title) . '. ' : '<i>';
+      $output .= ($node->biblio_volume) ? check_plain($node->biblio_volume) . ($node->biblio_issue ? '</i>(' . check_plain($node->biblio_issue) . '),&nbsp;' : ',</i> ') : '</i> ';
       //  $output .= ($node->biblio_issue) ? '('. check_plain($node->biblio_issue).')' :'';
       $output .= ($node->biblio_pages) ? check_plain($node->biblio_pages) . '.' : '';
       break; // generic
