@@ -658,6 +658,9 @@ p.facebook{
 
 
 /*// view-homepage-research-type-carusel*/
+.view-homepage-research-type-carusel .views-view-grid td {
+  text-align: center;
+}
 #block-views-0856ca6d70bb2f462f70449c1094fbac{
     margin:  0 0 30px;
 }
@@ -672,7 +675,7 @@ p.facebook{
  
     width: auto;
 }
-.view-homepage-research-type-carusel .views-field.views-field-field-research-type-icon{
+.view-homepage-research-type-carusel  .jcarousel-skin-tango .views-field.views-field-field-research-type-icon{
     background: url("/sites/all/themes/e_scholar/images/research_type_icon_BG.png") no-repeat scroll 100% 0 transparent;
 }
 .view-homepage-research-type-carusel .jcarousel-skin-tango .jcarousel-item {
